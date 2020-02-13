@@ -15,6 +15,7 @@ use App\User;
 Route::post('/register', "UserController@register");
 Route::post('/login', "UserController@login");
 
+
 Route::middleware('auth:api')->put('/profile', "UserController@profile");
 
 Route::get('ejs/{juniorenterprise}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
@@ -27,4 +28,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('instituicoes', 'FoundationController@index');
     Route::get('servicos', 'ServiceController@index');
     Route::get('ejs', 'JuniorEnterpriseController@index');
+    Route::post('/nucleos/add', "CoreController@store");
 });

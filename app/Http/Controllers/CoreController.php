@@ -54,7 +54,43 @@ class CoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $validator = Validator::make($request->all() , [
+                'name' => 'required|string|min:3|max:40',
+                'cnpj' => 'required|string|min:3|max:255'
+            ], [
+                'required' => 'O campo :attribute é obrigatório',
+                'max' => 'O campo :attribute não deve ultrapassar :max caracteres',
+                'min' => 'O campo :attribute deve ter pelo menos 3 caracteres'
+            ]);
+            if($validator->fails()) {
+                return ['status'=>false,"validacao"=>true,"erros"=>$validator->errors()];
+            }
+
+            
+
+            $core = Core::create([
+                'name' => $data['name'],
+                'cnpj' => $data['cnpj'],
+                'federation_id' => 1
+            ]);
+
+            return response()->json([
+                'success_message' => 'Núcleo criado com sucesso!',
+                'success_data' => $core
+                ], 201);
+
+        }
+        catch(\Exception $e) {
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+
+        }
     }
 
     /**
