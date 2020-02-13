@@ -18,7 +18,7 @@ Route::post('/login', "UserController@login");
 
 Route::middleware('auth:api')->put('/profile', "UserController@profile");
 
-Route::get('ejs/{juniorenterprise}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
+Route::get('ejs/{id}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
 
 
 Route::middleware(['auth:api'])->group(function () {

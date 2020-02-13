@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\JuniorEnterprise;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class JuniorEnterpriseController extends Controller
 {
@@ -31,10 +33,20 @@ class JuniorEnterpriseController extends Controller
         }
     }
 
-    public function getGoalByYear(JuniorEnterprise $juniorenterprise, $year)
+    public function getGoalByYear($id, $year)
     {
         try {
-            $goal = $juniorenterprise->junior_enterprise_goals()->where('year', $year)->first();
+            $goal = DB::table('junior_enterprises as ej')
+            ->selectRaw('SUM(projects.billing) as soma_fat, SUM(projects.project_quantity) as soma_proj, junior_enterprise_goals.billing as meta_fat,  junior_enterprise_goals.projects as meta_proj, round((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),2) as porc_fat')  
+            ->join('junior_enterprise_projects','ej.id','=','junior_enterprise_projects.junior_enterprise_id')
+            ->join('projects','projects.id','=','junior_enterprise_projects.project_id')
+            ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')
+            ->where('ej.id','=', $id)
+            ->where('junior_enterprise_goals.year', '=', $year)
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->get();
+
+            //$goal = $juniorenterprise->junior_enterprise_goals()->where('year', $year)->first();
 
             return response()->json([
                 'success_message' => 'Meta da EJ recuperada com sucesso!',
