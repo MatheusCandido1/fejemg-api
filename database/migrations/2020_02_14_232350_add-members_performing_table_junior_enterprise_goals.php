@@ -13,7 +13,7 @@ class AddMembersPerformingTableJuniorEnterpriseGoals extends Migration
      */
     public function up()
     {
-        Schema::table('junior_enteprise_goals', function (Blueprint $table) {
+        Schema::table('junior_enterprise_goals', function (Blueprint $table) {
             $table->integer('members_performing_goal');
         });
     }
@@ -25,7 +25,7 @@ class AddMembersPerformingTableJuniorEnterpriseGoals extends Migration
      */
     public function down()
     {
-        Schema::table('junior_enteprise_goals', function (Blueprint $table) {
+        Schema::table('junior_enterprise_goals', function (Blueprint $table) {
             $table->dropColumn('members_performing_goal');
         });
     }
