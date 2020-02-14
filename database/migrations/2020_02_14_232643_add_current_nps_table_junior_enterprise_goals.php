@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMembersPerformingTableJuniorEnterpriseGoals extends Migration
+class AddCurrentNpsTableJuniorEnterpriseGoals extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddMembersPerformingTableJuniorEnterpriseGoals extends Migration
     public function up()
     {
         Schema::table('junior_enteprise_goals', function (Blueprint $table) {
-            $table->integer('members_performing_goal');
+            $table->integer('current_nps');
         });
     }
 
@@ -26,7 +26,7 @@ class AddMembersPerformingTableJuniorEnterpriseGoals extends Migration
     public function down()
     {
         Schema::table('junior_enteprise_goals', function (Blueprint $table) {
-            $table->dropColumn('members_performing_goal');
+            $table->dropColumn('current_nps');
         });
     }
 }
