@@ -20,6 +20,7 @@ Route::middleware('auth:api')->put('/profile', "UserController@profile");
 
 Route::get('ejs/{id}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
 
+Route::get('ejs', 'JuniorEnterpriseController@index');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('nucleos', 'CoreController@index');
@@ -27,6 +28,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('cursos', 'DegreeController@index');
     Route::get('instituicoes', 'FoundationController@index');
     Route::get('servicos', 'ServiceController@index');
-    Route::get('ejs', 'JuniorEnterpriseController@index');
     Route::post('/nucleos/add', "CoreController@store");
 });

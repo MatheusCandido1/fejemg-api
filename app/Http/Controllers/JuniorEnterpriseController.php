@@ -19,6 +19,7 @@ class JuniorEnterpriseController extends Controller
         try {
             $juniorenterprises = JuniorEnterprise::with('Core','Foundation')->get();
 
+
             return response()->json([
                 'success_message' => 'EJs recuperadas com sucesso!',
                 'success_data' => $juniorenterprises
@@ -37,10 +38,12 @@ class JuniorEnterpriseController extends Controller
     {
         try {
             $goal = DB::table('junior_enterprises as ej')
-            ->selectRaw('SUM(projects.billing) as soma_fat, SUM(projects.project_quantity) as soma_proj, junior_enterprise_goals.billing as meta_fat,  junior_enterprise_goals.projects as meta_proj, round((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),2) as porc_fat')  
+            ->selectRaw('ej.name as nome_ej, cores.name as nome_nucleo, foundations.name as ies, format(SUM(projects.billing),2) as soma_fat, SUM(projects.project_quantity) as soma_proj, format(junior_enterprise_goals.billing,2) as meta_fat,  junior_enterprise_goals.projects as meta_proj, round((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),0) as porc_fat, round((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),0) as porc_proj')  
             ->join('junior_enterprise_projects','ej.id','=','junior_enterprise_projects.junior_enterprise_id')
             ->join('projects','projects.id','=','junior_enterprise_projects.project_id')
             ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')
+            ->join('cores','cores.id','=','ej.core_id')
+            ->join('foundations','foundations.id','=','ej.foundation_id')
             ->where('ej.id','=', $id)
             ->where('junior_enterprise_goals.year', '=', $year)
             ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
