@@ -21,6 +21,7 @@ class JuniorEnterprise extends Model
         return $this->belongsTo('App\Foundation');
     }
 
+
     public function services()
     {
         return $this->belongsToMany('App\Service');

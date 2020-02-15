@@ -17,7 +17,7 @@ class JuniorEnterpriseController extends Controller
     public function index()
     {
         try {
-            $juniorenterprises = JuniorEnterprise::with('Core','Foundation')->get();
+            $juniorenterprises = JuniorEnterprise::with('Core','Foundation','JuniorEnterpriseGoal')->get();
 
 
             return response()->json([
