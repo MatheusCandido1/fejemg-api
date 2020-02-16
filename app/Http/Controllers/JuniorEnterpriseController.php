@@ -17,7 +17,10 @@ class JuniorEnterpriseController extends Controller
     public function index()
     {
         try {
-            $juniorenterprises = JuniorEnterprise::with('Core','Foundation','JuniorEnterpriseGoal')->get();
+            $juniorenterprises = JuniorEnterprise::with('Core','Foundation')
+            ->join('junior_enterprise_goals','junior_enterprises.id', '=', 'junior_enterprise_goals.junior_enterprise_id')
+            ->select('junior_enterprises.*','junior_enterprise_goals.cluster')
+            ->get();
 
 
             return response()->json([
@@ -38,7 +41,7 @@ class JuniorEnterpriseController extends Controller
     {
         try {
             $goal = DB::table('junior_enterprises as ej')
-            ->selectRaw('ej.name as nome_ej, cores.name as nome_nucleo, foundations.name as ies, format(SUM(projects.billing),2) as soma_fat, SUM(projects.project_quantity) as soma_proj, format(junior_enterprise_goals.billing,2) as meta_fat,  junior_enterprise_goals.projects as meta_proj, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj, junior_enterprise_goals.members_performing_goal as mem_meta, junior_enterprise_goals.members_performing as mem_fat, truncate(((junior_enterprise_goals.members_performing_goal) / (junior_enterprise_goals.members_performing) * 100),6) as porc_mem')  
+            ->selectRaw('ej.name as nome_ej, cores.name as nome_nucleo, foundations.name as ies, junior_enterprise_goals.cluster as cluster, format(SUM(projects.billing),2) as soma_fat, SUM(projects.project_quantity) as soma_proj, format(junior_enterprise_goals.billing,2) as meta_fat,  junior_enterprise_goals.projects as meta_proj, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj, junior_enterprise_goals.members_performing_goal as mem_meta, junior_enterprise_goals.members_performing as mem_fat, truncate(((junior_enterprise_goals.members_performing_goal) / (junior_enterprise_goals.members_performing) * 100),6) as porc_mem')  
             ->join('junior_enterprise_projects','ej.id','=','junior_enterprise_projects.junior_enterprise_id')
             ->join('projects','projects.id','=','junior_enterprise_projects.project_id')
             ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')
