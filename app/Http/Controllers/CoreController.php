@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Core;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 
 class CoreController extends Controller
@@ -16,10 +18,18 @@ class CoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($year)
     {
         try {
-            $cores = Core::with('Federation')->get();
+            $cores = DB::table('cores')
+            ->selectRaw('cores.name as name_nuc, format(SUM(projects.billing),2) as fat_nuc, sum(projects.project_quantity) as fat_proj')
+            ->join('junior_enterprises','junior_enterprises.core_id', '=', 'cores.id')
+            ->join('junior_enterprise_projects','junior_enterprises.id', '=', 'junior_enterprise_projects.junior_enterprise_id')
+            ->join('projects','junior_enterprise_projects.project_id', '=', 'projects.id')
+            ->where(DB::raw('YEAR(projects.signature_date)'),'=', $year)
+            ->groupBy('cores.name')
+            ->orderBy('cores.name','asc')
+            ->get();
 
             return response()->json([
                 'success_message' => 'Núcleos recuperados com sucesso!',

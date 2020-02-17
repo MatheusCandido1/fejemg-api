@@ -6,3 +6,11 @@ inner join junior_enterprises on junior_enterprises.id = junior_enterprise_proje
 where junior_enterprises.id = 1 and EXTRACT(MONTH FROM projects.signature_date) and YEAR(projects.signature_date) = YEAR(CURDATE())
 group by (EXTRACT(MONTH FROM projects.signature_date))
 
+// Retorna faturamento e projetos por núcleo
+SELECT cores.name as name_nuc, format(SUM(projects.billing),2) as fat_nuc, sum(projects.project_quantity) as fat_proj 
+from cores 
+inner join junior_enterprises on junior_enterprises.core_id = cores.id 
+inner join junior_enterprise_projects on junior_enterprises.id = junior_enterprise_projects.junior_enterprise_id 
+inner join projects on junior_enterprise_projects.project_id = projects.id 
+where YEAR(projects.signature_date) = 2020 
+group by cores.name
