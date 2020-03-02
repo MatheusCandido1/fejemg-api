@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JuniorEnterprise extends Model
 {
+    protected $fillable = [
+        'name', 'email', 'about', 'associated_since', 'cnpj', 'website', 'members', 'core_id', 'foundation_id'
+    ];
     public function image()
     {
         return $this->morphOne('App\Image', 'imageable');

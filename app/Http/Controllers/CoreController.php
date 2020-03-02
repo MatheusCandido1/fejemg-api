@@ -18,7 +18,26 @@ class CoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($year)
+
+    public function index(){
+        try {
+            $cores = Core::with('Federation')->get();
+
+            return response()->json([
+                'success_message' => 'Núcleos recuperados com sucesso!',
+                'success_data' => $cores
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function GetCoreResultsByYear($year)
     {
         try {
             $cores = DB::table('cores')

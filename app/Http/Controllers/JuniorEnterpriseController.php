@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\JuniorEnterprise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 
 class JuniorEnterpriseController extends Controller
@@ -86,7 +87,50 @@ class JuniorEnterpriseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $validator = Validator::make($request->all() , [
+                'name' => 'required|string|min:3|max:40',
+                'cnpj' => 'required|string|min:3|max:255'
+            ], [
+                'required' => 'O campo :attribute é obrigatório',
+                'max' => 'O campo :attribute não deve ultrapassar :max caracteres',
+                'min' => 'O campo :attribute deve ter pelo menos 3 caracteres'
+            ]);
+            if($validator->fails()) {
+                return ['status'=>false,"validacao"=>true,"erros"=>$validator->errors()];
+            }
+
+            
+
+            $ej = JuniorEnterprise::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'about' => $data['about'],
+                'associated_since' => $data['associated_since'],
+                'cnpj' => $data['cnpj'],
+                'website' => $data['website'],
+                'members' => $data['members'],
+                'foundation_id' => $data['foundation_id'],
+                'core_id' => $data['core_id']
+            ]);
+
+            return response()->json([
+                'success_message' => 'EJ criada com sucesso!',
+                'success_data' => $ej
+                ], 201);
+
+        }
+        catch(\Exception $e) {
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage(),
+                'request' => $request->all()
+            ], 500);
+
+        }
     }
 
     /**
