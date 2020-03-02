@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\JuniorEnterprise;
 use App\JuniorEnterpriseGoal;
+use App\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -115,7 +116,7 @@ class JuniorEnterpriseController extends Controller
                 'website' => $data['website'],
                 'members' => $data['members'],
                 'foundation_id' => $data['foundation_id'],
-                'core_id' => $data['core_id']
+                'core_id' => $data['core_id'],
             ]);
 
             $jeGoals = new JuniorEnterpriseGoal();
@@ -135,6 +136,10 @@ class JuniorEnterpriseController extends Controller
             $jeGoals->junior_enterprise()->associate($ej);
             $jeGoals->save();
 
+            
+            $ej->services()->sync($request->services_id);
+            $ej->degrees()->sync($request->degrees_id);
+
 
             return response()->json([
                 'success_message' => 'EJ criada com sucesso!',
@@ -146,8 +151,7 @@ class JuniorEnterpriseController extends Controller
             return response()->json([
                 'error_type' => 'Erro no servidor',
                 'error_message' => 'Aconteceu um erro interno',
-                'error_description' => $e->getMessage(),
-                'request' => $request->all()
+                'error_description' => $e->getMessage()
             ], 500);
 
         }
