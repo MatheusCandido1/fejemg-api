@@ -7,6 +7,7 @@ use App\JuniorEnterpriseGoal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 
 class JuniorEnterpriseController extends Controller
@@ -118,7 +119,7 @@ class JuniorEnterpriseController extends Controller
             ]);
 
             $jeGoals = new JuniorEnterpriseGoal();
-            $jeGoals->year = 2020;
+            $jeGoals->year = Carbon::now()->year;
             $jeGoals->billing = 0;
             $jeGoals->projects = 0;
             $jeGoals->members_performing = 0;
@@ -129,7 +130,7 @@ class JuniorEnterpriseController extends Controller
             $jeGoals->members_performing_goal = 0;
             $jeGoals->current_nps = 0;
             $jeGoals->cluster = 0;
-            $jeGoals->current_members_events = 2020;
+            $jeGoals->current_members_events = 0;
 
             $jeGoals->junior_enterprise()->associate($ej);
             $jeGoals->save();
