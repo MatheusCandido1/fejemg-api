@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\JuniorEnterprise;
+use App\JuniorEnterpriseGoal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -115,6 +116,24 @@ class JuniorEnterpriseController extends Controller
                 'foundation_id' => $data['foundation_id'],
                 'core_id' => $data['core_id']
             ]);
+
+            $jeGoals = new JuniorEnterpriseGoal();
+            $jeGoals->year = 2020;
+            $jeGoals->billing = 0;
+            $jeGoals->projects = 0;
+            $jeGoals->members_performing = 0;
+            $jeGoals->shared_actions = 0;
+            $jeGoals->members_events = 0;
+            $jeGoals->nps = 0;
+            $jeGoals->impact_projects = 0;
+            $jeGoals->members_performing_goal = 0;
+            $jeGoals->current_nps = 0;
+            $jeGoals->cluster = 0;
+            $jeGoals->current_members_events = 2020;
+
+            $jeGoals->junior_enterprise()->associate($ej);
+            $jeGoals->save();
+
 
             return response()->json([
                 'success_message' => 'EJ criada com sucesso!',
