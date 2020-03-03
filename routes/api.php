@@ -22,6 +22,8 @@ Route::get('ejs/{id}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
 
 Route::get('ejs', 'JuniorEnterpriseController@index');
 
+Route::get('ejs/{id}', 'JuniorEnterpriseController@getEjById');
+
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
 Route::middleware(['auth:api'])->group(function () {
