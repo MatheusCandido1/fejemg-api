@@ -68,8 +68,33 @@ class JuniorEnterpriseController extends Controller
     public function getGoalByYear($id, $year)
     {
         try {
+            $juniorenterprises = JuniorEnterprise::with('junior_enterprise_goals')
+            ->join('junior_enterprise_goals','junior_enterprises.id', '=', 'junior_enterprise_goals.junior_enterprise_id')
+            ->select('junior_enterprises.*','junior_enterprise_goals.cluster')
+            ->where('junior_enterprises.id','=', $id)
+            ->where('junior_enterprise_goals.year', '=', $year)
+            ->get();
+
+
+            return response()->json([
+                'success_message' => 'EJs recuperadas com sucesso!',
+                'success_data' => $juniorenterprises
+            ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getGoalByYearWithSum($id, $year)
+    {
+        try {
             $goal =  new JuniorEnterprise();
-            $goal = $goal->getEjByIdAndYear($id, $year)->get();
+            $goal = $goal->getEjByIdAndYearWithSum($id, $year)->get();
 
             return response()->json([
                 'success_message' => 'Meta da EJ recuperada com sucesso!',
@@ -143,7 +168,7 @@ class JuniorEnterpriseController extends Controller
             $jeGoals->impact_projects = 0;
             $jeGoals->members_performing_goal = 0;
             $jeGoals->current_nps = 0;
-            $jeGoals->cluster = 0;
+            $jeGoals->cluster = 1;
             $jeGoals->current_members_events = 0;
 
             $jeGoals->junior_enterprise()->associate($ej);

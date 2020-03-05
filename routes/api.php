@@ -18,8 +18,8 @@ Route::post('/login', "UserController@login");
 
 Route::middleware('auth:api')->put('/profile', "UserController@profile");
 
-Route::get('ejs/{id}/meta/{year}', 'JuniorEnterpriseController@getGoalByYear');
-
+Route::get('ejs/{id}/resultados/{year}', 'JuniorEnterpriseController@getGoalByYearWithSum');
+Route::get('ejs/{id}/metas/{year}', 'JuniorEnterpriseController@getGoalByYear');
 Route::get('ejs', 'JuniorEnterpriseController@index');
 
 Route::get('ejs/{id}', 'JuniorEnterpriseController@getEjById');
