@@ -41,6 +41,24 @@ class JuniorEnterpriseController extends Controller
         }
     }
 
+    public function UpdateGoal(Request $request, JuniorEnterpriseGoal $juniorEntepriseGoal){
+        try{
+        $juniorEntepriseGoal->fill($request->all());
+        $juniorEntepriseGoal->save();
+
+        return response()->json([
+            'success_message' => 'EJs recuperadas com sucesso!',
+            'success_data' => $request->all()
+        ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getEjById($id)
     {
         try {

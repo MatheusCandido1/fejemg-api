@@ -21,7 +21,7 @@ Route::middleware('auth:api')->put('/profile', "UserController@profile");
 Route::get('ejs/{id}/resultados/{year}', 'JuniorEnterpriseController@getGoalByYearWithSum');
 Route::get('ejs/{id}/metas/{year}', 'JuniorEnterpriseController@getGoalByYear');
 Route::get('ejs', 'JuniorEnterpriseController@index');
-
+Route::put('atualizar/meta/{juniorEntepriseGoal}', "JuniorEnterpriseController@updateGoal");
 Route::get('ejs/{id}', 'JuniorEnterpriseController@getEjById');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
