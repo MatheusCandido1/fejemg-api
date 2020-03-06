@@ -34,4 +34,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('nucleos', 'CoreController@index');
     Route::post('/nucleos/add', "CoreController@store");
     Route::post('/ej/add', "JuniorEnterpriseController@store");
+    
+    Route::post('/projeto/add', "ProjectController@store");
 });

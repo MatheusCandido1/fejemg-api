@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -35,7 +37,49 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+
+            $validator = Validator::make($request->all() , [
+                'billing' => 'required|string|min:3|max:40'
+            ], [
+                'required' => 'O campo :attribute é obrigatório',
+                'max' => 'O campo :attribute não deve ultrapassar :max caracteres',
+                'min' => 'O campo :attribute deve ter pelo menos 3 caracteres'
+            ]);
+            if($validator->fails()) {
+                return ['status'=>false,"validacao"=>true,"erros"=>$validator->errors()];
+            }
+
+            
+
+            $project = Project::create([
+                'signature_date' => $data['signature_date'],
+                'due_date' => $data['due_date'],
+                'working_days' => $data['working_days'],
+                'project_quantity' => $data['project_quantity'],
+                'billing' => $data['billing'],
+                'legal_person' => $data['legal_person'],
+                'shared_action' => $data['shared_action'],
+                'guidance' => $data['guidance']
+            ]);
+
+            $project->junior_enterprises()->sync($request->ej_id);
+           
+            return response()->json([
+                'success_message' => 'Projeto criado com sucesso!',
+                'success_data' => $project
+                ], 201);
+
+        }
+        catch(\Exception $e) {
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+
+        }
     }
 
     /**
