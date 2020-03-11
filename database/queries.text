@@ -1,10 +1,5 @@
 // Retorna faturamento e projetos por mês
-select MONTHNAME(projects.signature_date), sum(projects.billing), sum(projects.project_quantity) 
-from projects 
-inner join junior_enterprise_projects on projects.id = junior_enterprise_projects.project_id 
-inner join junior_enterprises on junior_enterprises.id = junior_enterprise_projects.junior_enterprise_id 
-where junior_enterprises.id = 1 and EXTRACT(MONTH FROM projects.signature_date) and YEAR(projects.signature_date) = YEAR(CURDATE())
-group by (EXTRACT(MONTH FROM projects.signature_date))
+select MONTHNAME(projects.signature_date) as month, sum(projects.billing) as value from projects inner join junior_enterprise_project on projects.id = junior_enterprise_project.project_id inner join junior_enterprises on junior_enterprises.id = junior_enterprise_project.junior_enterprise_id where junior_enterprises.id = 1 and EXTRACT(MONTH FROM projects.signature_date) and YEAR(projects.signature_date) = YEAR(CURDATE()) group by (EXTRACT(MONTH FROM projects.signature_date))
 
 // Retorna faturamento e projetos por núcleo
 SELECT cores.name as name_nuc, format(SUM(projects.billing),2) as fat_nuc, sum(projects.project_quantity) as fat_proj 

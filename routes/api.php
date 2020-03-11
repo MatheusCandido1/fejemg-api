@@ -23,6 +23,8 @@ Route::get('ejs/{id}/metas/{year}', 'JuniorEnterpriseController@getGoalByYear');
 Route::get('ejs', 'JuniorEnterpriseController@index');
 Route::put('atualizar/meta/{juniorEntepriseGoal}', "JuniorEnterpriseController@updateGoal");
 Route::get('ejs/{id}', 'JuniorEnterpriseController@getEjById');
+Route::get('faturamento/{year}', 'JuniorEnterpriseController@getTotalBillingByMonth');
+Route::get('ejs/{id}/faturamento/{year}', 'JuniorEnterpriseController@getGoalByMonth');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 

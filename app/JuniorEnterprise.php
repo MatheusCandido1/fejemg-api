@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 class JuniorEnterprise extends Model
 {
+
+
     protected $fillable = [
         'name', 'email', 'about', 'associated_since', 'cnpj', 'website', 'members', 'core_id', 'foundation_id'
     ];
@@ -45,6 +47,15 @@ class JuniorEnterprise extends Model
     {
         return $this->belongsToMany('App\Degree');
     }
+
+    public function getGoalByMonth($id, $year){
+        return DB::table('junior_enterprises as ej')
+        ->selectRaw(' FORMAT((meta.billing/12),2) as `Jan`, FORMAT(TRUNCATE((meta.billing/12)*2,6),2) as `Fev`, FORMAT(TRUNCATE((meta.billing/12)*3,6),2) as `Mar`, FORMAT(TRUNCATE((meta.billing/12)*4,6),2) as `Abr`, FORMAT(TRUNCATE((meta.billing/12)*5,6),2) as `Mai`, FORMAT(TRUNCATE((meta.billing/12)*6,6),2) as `Jun`, FORMAT(TRUNCATE((meta.billing/12)*7,6),2) as `Jul`, FORMAT(TRUNCATE((meta.billing/12)*8,6),2) as `Ago`, FORMAT(TRUNCATE((meta.billing/12)*9,6),2) as `Set`, FORMAT(TRUNCATE((meta.billing/12)*10,6),2) as `Out`, FORMAT(TRUNCATE((meta.billing/12)*11,6),2) as `Nov`, FORMAT(TRUNCATE((meta.billing/12)*12,6),2) as `Dez`')
+        ->join('junior_enterprise_goals as meta','ej.id','=','meta.junior_enterprise_id')
+        ->where('ej.id','=',$id)
+        ->where('meta.year','=',$year);
+    }
+
 
     public function getEjByIdAndYearWithSum($id, $year) 
     {

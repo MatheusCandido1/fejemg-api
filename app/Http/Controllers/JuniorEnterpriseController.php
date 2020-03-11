@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\JuniorEnterprise;
 use App\JuniorEnterpriseGoal;
 use App\Service;
+use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
@@ -31,6 +33,26 @@ class JuniorEnterpriseController extends Controller
                 'success_message' => 'EJs recuperadas com sucesso!',
                 'success_data' => $juniorenterprises
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getTotalBillingByMonth($year){
+        try {
+             $result = DB::table('projects')
+            ->selectRaw('sum(projects.billing) as x')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+            return response()->json($result, 200);
         }
         catch(\Exception $e){
             return response()->json([
@@ -98,6 +120,26 @@ class JuniorEnterpriseController extends Controller
                 'success_message' => 'EJs recuperadas com sucesso!',
                 'success_data' => $juniorenterprises
             ], 200);
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getGoalByMonth($id, $year){
+        try {
+            $billing =  new JuniorEnterprise();
+            $billing = collect($billing->getGoalByMonth($id, $year)->first());
+
+            return response()->json(
+                $billing->map(function($value, $key) {
+                    return ['x'=>$key, 'y'=>$value];
+                })->values()
+            );
         }
         catch(\Exception $e){
             return response()->json([
