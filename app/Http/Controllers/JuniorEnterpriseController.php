@@ -130,16 +130,50 @@ class JuniorEnterpriseController extends Controller
         }
     }
 
+    public function getResultsByMonth($id, $year)
+    { 
+        try {
+        $resultResults = DB::table('projects')
+            ->selectRaw('date_format(projects.signature_date, "%b") as x, sum(projects.billing) as y')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->where('junior_enterprises.id','=', $id)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+
+
+
+           return response()->json($resultResults, 200);
+       }
+       catch(\Exception $e){
+           return response()->json([
+               'error_type' => 'Erro no servidor',
+               'error_message' => 'Aconteceu um erro interno',
+               'error_description' => $e->getMessage()
+           ], 500);
+       }
+    }
+
     public function getGoalByMonth($id, $year){
         try {
             $billing =  new JuniorEnterprise();
             $billing = collect($billing->getGoalByMonth($id, $year)->first());
 
-            return response()->json(
+            $resultResults = DB::table('projects')
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) over (order by projects.signature_date asc rows between unbounded preceding and current row) as y')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->where('junior_enterprises.id','=', $id)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+
+            return response()->json(['meta' => 
                 $billing->map(function($value, $key) {
                     return ['x'=>$key, 'y'=>$value];
-                })->values()
-            );
+                })->values(), 'resultado' => $resultResults
+            ]);
         }
         catch(\Exception $e){
             return response()->json([
