@@ -25,7 +25,7 @@ Route::put('atualizar/meta/{juniorEntepriseGoal}', "JuniorEnterpriseController@u
 Route::get('ejs/{id}', 'JuniorEnterpriseController@getEjById');
 Route::get('faturamento/{year}', 'JuniorEnterpriseController@getTotalBillingByMonth');
 Route::get('ejs/{id}/faturamento/{year}', 'JuniorEnterpriseController@getGoalByMonth');
-Route::get('ejs/{id}/teste/{year}', 'JuniorEnterpriseController@getResultsByMonth');
+Route::get('ejs/{id}/projetos/{year}', 'JuniorEnterpriseController@getProjetctsByMonth');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
