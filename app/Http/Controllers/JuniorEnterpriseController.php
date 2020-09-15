@@ -108,7 +108,7 @@ class JuniorEnterpriseController extends Controller
     public function getProjetctsByMonth($id, $year){
         try {
             $results = DB::table('projects')
-            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.project_quantity) over (order by projects.signature_date asc rows between unbounded preceding and current row) as y')  
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.project_quantity) as y')  
             ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
             ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
             ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
@@ -116,14 +116,28 @@ class JuniorEnterpriseController extends Controller
             ->groupBy(DB::raw('MONTH(projects.signature_date)'))
             ->get();
 
+            $newResult = collect([]);
+
+            for($i = 0; $i < 12; $i++){
+                $newResult[$i] = $results[$i];
+            }
+
+            for($i = 0; $i < 12; $i++){
+                if($i === 0){
+                    $newResult[$i]->y = $results[$i]->y + 0;
+                }
+                else{
+                $newResult[$i]->y = $results[$i]->y + $results[$i - 1]->y;
+                }
+            }
+
             $goal =  new JuniorEnterprise();
             $goal = collect($goal->getProjectByMonth($id, $year)->first());
-
 
             return response()->json(['meta' => 
                 $goal->map(function($value, $key) {
                     return ['x'=>$key, 'y'=>$value];
-                })->values(), 'resultado' => $results
+                })->values(), 'resultado' => $newResult
             ]); 
         }
         catch(\Exception $e){
@@ -191,7 +205,7 @@ class JuniorEnterpriseController extends Controller
             $billing = collect($billing->getGoalByMonth($id, $year)->first());
 
             $resultResults = DB::table('projects')
-            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) over (order by projects.signature_date asc rows between unbounded preceding and current row) as y')  
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) as y')  
             ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
             ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
             ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
@@ -199,11 +213,26 @@ class JuniorEnterpriseController extends Controller
             ->groupBy(DB::raw('MONTH(projects.signature_date)'))
             ->get();
 
+            $newResult = collect([]);
+
+            for($i = 0; $i < 12; $i++){
+                $newResult[$i] = $resultResults[$i];
+            }
+
+            for($i = 0; $i < 12; $i++){
+                if($i === 0){
+                    $newResult[$i]->y = $resultResults[$i]->y + 0;
+                }
+                else{
+                $newResult[$i]->y = $resultResults[$i]->y + $resultResults[$i - 1]->y;
+                }
+            }
+
             return response()->json(['meta' => 
                 $billing->map(function($value, $key) {
                     return ['x'=>$key, 'y'=>$value];
-                })->values(), 'resultado' => $resultResults
-            ]);
+                })->values(), 'resultado' => $newResult
+            ]); 
         }
         catch(\Exception $e){
             return response()->json([
