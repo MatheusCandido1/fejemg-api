@@ -134,6 +134,7 @@ class JuniorEnterpriseController extends Controller
             $goal =  new JuniorEnterprise();
             $goal = collect($goal->getProjectByMonth($id, $year)->first());
 
+
             return response()->json(['meta' => 
                 $goal->map(function($value, $key) {
                     return ['x'=>$key, 'y'=>$value];
