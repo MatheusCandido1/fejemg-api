@@ -47,7 +47,7 @@ class JuniorEnterprise extends Model
 
     public function getGoalByMonth($id, $year){
         return DB::table('junior_enterprises as ej')
-        ->selectRaw(' (meta.billing/12) as `Jan`, TRUNCATE((meta.billing/12)*2,6) as `Fev`, TRUNCATE((meta.billing/12)*3,6) as `Mar`, TRUNCATE((meta.billing/12)*4,6) as `Abr`, TRUNCATE((meta.billing/12)*5,6) as `Mai`, TRUNCATE((meta.billing/12)*6,6) as `Jun`, TRUNCATE((meta.billing/12)*7,6) as `Jul`, TRUNCATE((meta.billing/12)*8,6) as `Ago`, TRUNCATE((meta.billing/12)*9,6) as `Set`, TRUNCATE((meta.billing/12)*10,6) as `Out`, TRUNCATE((meta.billing/12)*11,6) as `Nov`, TRUNCATE((meta.billing/12)*12,6) as `Dez`')
+        ->selectRaw('TRUNCATE((meta.billing/12),2) as `Jan`, TRUNCATE((meta.billing/12)*2,2) as `Fev`, TRUNCATE((meta.billing/12)*3,2) as `Mar`, TRUNCATE((meta.billing/12)*4,2) as `Abr`, TRUNCATE((meta.billing/12)*5,2) as `Mai`, TRUNCATE((meta.billing/12)*6,2) as `Jun`,TRUNCATE((meta.billing/12)*7,2) as `Jul`, TRUNCATE((meta.billing/12)*8,2) as `Ago`,TRUNCATE((meta.billing/12)*9,2) as `Set`, TRUNCATE((meta.billing/12)*10,2) as `Out`, TRUNCATE((meta.billing/12)*11,2) as `Nov`, TRUNCATE((meta.billing/12)*12,2) as `Dez`')
         ->join('junior_enterprise_goals as meta','ej.id','=','meta.junior_enterprise_id')
         ->where('ej.id','=',$id)
         ->where('meta.year','=',$year);

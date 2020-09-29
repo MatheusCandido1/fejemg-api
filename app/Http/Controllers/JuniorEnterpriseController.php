@@ -105,7 +105,7 @@ class JuniorEnterpriseController extends Controller
         }
     }
 
-    public function getProjetctsByMonth($id, $year){
+    public function getProjectByMonth($id, $year){
         try {
             $results = DB::table('projects')
             ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.project_quantity) as y')  
@@ -116,30 +116,42 @@ class JuniorEnterpriseController extends Controller
             ->groupBy(DB::raw('MONTH(projects.signature_date)'))
             ->get();
 
-            $newResult = collect([]);
-
-            for($i = 0; $i < 12; $i++){
-                $newResult[$i] = $results[$i];
-            }
-
-            for($i = 0; $i < 12; $i++){
-                if($i === 0){
-                    $newResult[$i]->y = $results[$i]->y + 0;
-                }
-                else{
-                $newResult[$i]->y = $results[$i]->y + $results[$i - 1]->y;
-                }
-            }
-
             $goal =  new JuniorEnterprise();
             $goal = collect($goal->getProjectByMonth($id, $year)->first());
+            
+            $newResult = collect([]);
 
+            if(sizeof($results) > 0) {
+                for($i = 0; $i < 12; $i++){
+                    $newResult[$i] = $results[$i];
+                }
+    
+                for($i = 0; $i < 12; $i++){
+                    if($i === 0){
+                        $newResult[$i]->y = $results[$i]->y + 0;
+                    }
+                    else{
+                    $newResult[$i]->y = $results[$i]->y + $results[$i - 1]->y;
+                    }
+                }
+    
+               
+    
+    
+                return response()->json(['meta' => 
+                    $goal->map(function($value, $key) {
+                        return ['x'=>$key, 'y'=>$value];
+                    })->values(), 'resultado' => $newResult
+                ]); 
+            } else {
+                return response()->json(['meta' => 
+                    $goal->map(function($value, $key) {
+                        return ['x'=>$key, 'y'=>$value];
+                    })->values(), 'resultado' => []
+                ]); 
+            }
 
-            return response()->json(['meta' => 
-                $goal->map(function($value, $key) {
-                    return ['x'=>$key, 'y'=>$value];
-                })->values(), 'resultado' => $newResult
-            ]); 
+         
         }
         catch(\Exception $e){
             return response()->json([
@@ -208,6 +220,7 @@ class JuniorEnterpriseController extends Controller
             $billing =  new JuniorEnterprise();
             $billing = collect($billing->getGoalByMonth($id, $year)->first());
 
+
             $resultResults = DB::table('projects')
             ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) as y')  
             ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
@@ -218,25 +231,36 @@ class JuniorEnterpriseController extends Controller
             ->get();
 
             $newResult = collect([]);
-
-            for($i = 0; $i < 12; $i++){
-                $newResult[$i] = $resultResults[$i];
+            
+            if(sizeof($resultResults) > 0) {
+                for($i = 0; $i < 12; $i++){
+                    $newResult[$i] = $resultResults[$i];
+                }
+    
+                for($i = 0; $i < 12; $i++){
+                    if($i === 0){
+                        $newResult[$i]->y = $resultResults[$i]->y + 0;
+                    }
+                    else{
+                    $newResult[$i]->y = $resultResults[$i]->y + $resultResults[$i - 1]->y;
+                    }
+                }
+    
+                return response()->json(['meta' => 
+                    $billing->map(function($value, $key) {
+                        return ['x'=>$key, 'y'=>$value];
+                    })->values(), 'resultado' => $newResult
+                ]); 
+            } else {
+                return response()->json(['meta' => 
+                    $billing->map(function($value, $key) {
+                        return ['x'=>$key, 'y'=>$value];
+                    })->values(), 'resultado' => []
+                ]);
             }
 
-            for($i = 0; $i < 12; $i++){
-                if($i === 0){
-                    $newResult[$i]->y = $resultResults[$i]->y + 0;
-                }
-                else{
-                $newResult[$i]->y = $resultResults[$i]->y + $resultResults[$i - 1]->y;
-                }
-            }
-
-            return response()->json(['meta' => 
-                $billing->map(function($value, $key) {
-                    return ['x'=>$key, 'y'=>$value];
-                })->values(), 'resultado' => $newResult
-            ]); 
+            
+           
         }
         catch(\Exception $e){
             return response()->json([
