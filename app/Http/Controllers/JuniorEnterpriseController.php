@@ -179,7 +179,7 @@ class JuniorEnterpriseController extends Controller
     { 
         try {
         $resultResults = DB::table('projects')
-            ->selectRaw('date_format(projects.signature_date, "%M") as x, sum(projects.billing) as y')  
+            ->selectRaw('MONTHNAME(projects.signature_date) as x, sum(projects.billing) as y, MONTH(projects.signature_date) as z')  
             ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
             ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
             ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
