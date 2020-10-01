@@ -37,6 +37,31 @@ class CoreController extends Controller
         }
     }
 
+    public function getResults($id, $year){
+        try {
+            $results[] = '';
+
+            $core = DB::table('cores')
+            ->selectRaw('cores.id as core_id, cores.name as core_name, cores.color as core_color, cores.image as core_image')
+            ->where('cores.id','=',$id)
+            ->first();
+
+            $results['core'] = $core;
+
+            return response()->json([
+                'success_message' => 'Núcleos recuperados com sucesso!',
+                'success_data' => $results
+            ], 200);
+
+        } catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function GetCoreResultsByYear($year)
     {
         try {
