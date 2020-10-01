@@ -46,7 +46,40 @@ class CoreController extends Controller
             ->where('cores.id','=',$id)
             ->first();
 
+            $resultResults = DB::table('projects')
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) as y')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->where('junior_enterprises.core_id','=', $id)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+
+            $newResult = collect([]);
+            
+            if(sizeof($resultResults) > 0) {
+                for($i = 0; $i < 12; $i++){
+                    $newResult[$i] = $resultResults[$i];
+                }
+    
+                for($i = 0; $i < 12; $i++){
+                    if($i === 0){
+                        $newResult[$i]->y = $resultResults[$i]->y + 0;
+                    }
+                    else{
+                    $newResult[$i]->y = $resultResults[$i]->y + $resultResults[$i - 1]->y;
+                    }
+                }
+            }
+            $core_goal =  new Core();
+            $goal = collect($core_goal->getCoreGoalByMonth($id, $year)->first());
+
+
             $results['core'] = $core;
+            $results['billing_results'] = $newResult;
+            $results['billing_goal'] = $goal->map(function($value, $key) {
+                return ['x'=>$key, 'y'=>$value];
+            });
 
             return response()->json([
                 'success_message' => 'Núcleos recuperados com sucesso!',
