@@ -27,6 +27,7 @@ Route::get('faturamento/{year}', 'JuniorEnterpriseController@getTotalBillingByMo
 Route::get('ejs/{id}/faturamento/{year}', 'JuniorEnterpriseController@getGoalByMonth');
 Route::get('ejs/{id}/projetos/{year}', 'JuniorEnterpriseController@getProjectByMonth');
 Route::get('ejs/{id}/resultados/{year}', 'JuniorEnterpriseController@getResultsByMonth');
+Route::get('nucleos/{id}/resultados/{year}', 'CoreController@getResults');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
