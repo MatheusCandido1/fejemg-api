@@ -79,7 +79,7 @@ class CoreController extends Controller
             $results['billing_results'] = $newResult;
             $results['billing_goal'] = $goal->map(function($value, $key) {
                 return ['x'=>$key, 'y'=>$value];
-            });
+            })->values();
 
             return response()->json([
                 'success_message' => 'Núcleos recuperados com sucesso!',
