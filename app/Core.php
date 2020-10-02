@@ -36,4 +36,12 @@ class Core extends Model
         ->where('c.id','=',$id)
         ->where('meta.year','=',$year);
     }
+
+    public function getCoreProjectsByMonth($id, $year) {
+        return DB::table('cores as c')
+        ->selectRaw('ROUND((meta.projects/12),0) as `Jan`, ROUND((meta.projects/12)*2,0) as `Fev`, ROUND((meta.projects/12)*3,0) as `Mar`, ROUND((meta.projects/12)*4,0) as `Abr`, ROUND((meta.projects/12)*5,0) as `Mai`, ROUND((meta.projects/12)*6,0) as `Jun`, ROUND((meta.projects/12)*7,0) as `Jul`, ROUND((meta.projects/12)*8,0) as `Ago`, ROUND((meta.projects/12)*9,0) as `Set`, ROUND((meta.projects/12)*10,0) as `Out`, ROUND((meta.projects/12)*11,0) as `Nov`, ROUND((meta.projects/12)*12,0) as `Dez`')
+        ->join('core_goals as meta','c.id','=','meta.core_id')
+        ->where('c.id','=',$id)
+        ->where('meta.year','=',$year);
+    }
 }
