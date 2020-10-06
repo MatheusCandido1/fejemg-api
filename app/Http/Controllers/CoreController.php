@@ -232,7 +232,7 @@ class CoreController extends Controller
         }
 
         return response()->json([
-            'success_message' => 'Meta da EJ recuperada com sucesso!',
+            'success_message' => 'Resultados!',
             'success_data' => $leaders
         ], 200);
     }
