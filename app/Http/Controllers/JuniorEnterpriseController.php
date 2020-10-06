@@ -135,8 +135,6 @@ class JuniorEnterpriseController extends Controller
                     }
                 }
     
-               
-    
     
                 return response()->json(['meta' => 
                     $goal->map(function($value, $key) {

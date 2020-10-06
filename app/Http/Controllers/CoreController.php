@@ -55,6 +55,7 @@ class CoreController extends Controller
             ->groupBy(DB::raw('MONTH(projects.signature_date)'))
             ->get();
 
+
             $newResult = collect([]);
             
             if(sizeof($resultResults) > 0) {
@@ -64,19 +65,23 @@ class CoreController extends Controller
     
                 for($i = 0; $i < 12; $i++){
                     if($i === 0){
-                        $newResult[$i]->y = $resultResults[$i]->y + 0;
+                        $newResult[$i]->y = $newResult[$i]->y + 0;
                     }
                     else{
-                    $newResult[$i]->y = $resultResults[$i]->y + $resultResults[$i - 1]->y;
+                    $newResult[$i]->y = $newResult[$i]->y + $newResult[$i - 1]->y;
                     }
                 }
-            }
+                for($i=0; $i<12; $i++){
+                    $newResult[$i]->y = (float) number_format( $newResult[$i]->y,2,'.','');
+                }
+            } 
+
             $core_goal =  new Core();
             $goal = collect($core_goal->getCoreGoalByMonth($id, $year)->first());
 
 
             $results['core'] = $core;
-            $results['billing_results'] = $newResult;
+            $results['billing_results'] = $resultResults;
             $results['billing_goal'] = $goal->map(function($value, $key) {
                 return ['x'=>$key, 'y'=>$value];
             })->values();
