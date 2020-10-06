@@ -70,9 +70,8 @@ class CoreController extends Controller
                     else{
                     $newResult[$i]->y = $newResult[$i]->y + $newResult[$i - 1]->y;
                     }
-                }
-                for($i=0; $i<12; $i++){
                     $newResult[$i]->y = (float) number_format( $newResult[$i]->y,2,'.','');
+
                 }
             } 
 
