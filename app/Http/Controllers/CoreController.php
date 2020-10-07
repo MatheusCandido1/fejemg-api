@@ -231,8 +231,6 @@ class CoreController extends Controller
         }
         }
 
-
-
         return response()->json([
             'success_message' => 'Resultados!',
             'success_data' => $leaders
@@ -242,11 +240,6 @@ class CoreController extends Controller
     public function getClusterByLight($id, $year) {
         $currentMonth = Carbon::now()->month;
 
-        $leaders['ac'] = 0;
-        $leaders['green'] = 0;
-        $leaders['yellow'] = 0;
-        $leaders['red'] = 0;
-
         $result = DB::table('junior_enterprises as ej')
         ->selectRaw('junior_enterprise_goals.cluster as cluster, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
         ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
@@ -255,8 +248,8 @@ class CoreController extends Controller
         ->join('cores','cores.id','=','ej.core_id')
         ->where('ej.core_id','=', $id)
         ->where('junior_enterprise_goals.year', '=', $year)
-        ->where('junior_enterprise_goals.cluster', '=', 1)
         ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+        ->groupBy('ej.name')
         ->get();
 
         $newResult = collect();
@@ -264,33 +257,31 @@ class CoreController extends Controller
             $newResult[$i] = $result[$i];
             $newResult[$i]->porc = min( ((float) number_format( $result[$i]->porc_mem,3,'.','')), ((float) number_format( $result[$i]->porc_fat,3,'.','')),((float) number_format( $result[$i]->porc_proj,3,'.','')));
 
-        if($newResult[$i]->porc >= 100){
-            $leaders['ac'] = $leaders['ac'] + 1;
+        if($newResult[$i]->porc >= 100) {
+            break;
         }
 
         if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < 100){
-            $leaders['green'] = $leaders['green'] + 1;
+            
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth+1) * 8.3333){
-            $leaders['yellow'] = $leaders['yellow'] + 1;
-        }
+        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth-1) * 8.3333){
+                     
+            }
 
         if($newResult[$i]->porc < ($currentMonth * 8.3333)){
-            $leaders['red'] = $leaders['red'] + 1;
+                   
+            }
         }
-        }
-        
-        $cluster['cluster1'] = [
-            'ac' => 0,
-            'green' => 0,
-            'yellow' => 0,
-            'red' => 0
-        ];
+        $leaders['ac'] = ([3,4,5,6,3]);
+        $leaders['green'] = ([3,4,5,6,3]);
+        $leaders['yellow'] = ([3,4,5,6,3]);
+        $leaders['red'] = ([3,4,5,6,3]);
 
-
-
-        return response()->json( $result);
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $leaders
+        ], 200);
     }
 
     /**
