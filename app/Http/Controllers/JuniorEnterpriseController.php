@@ -268,16 +268,6 @@ class JuniorEnterpriseController extends Controller
         }
     }
 
-    public function populate(){
-        for($j = 16; $j < 30; $j++){
-        for($i = 1; $i < 13; $i++) {
-            DB::table('junior_enterprise_project')->insert([
-                ['junior_enterprise_id' => $j, 'project_id' => $i],
-            ]);
-        }
-    }
-    }
-
     public function getGoalByYearWithSum($id, $year)
     {
         try {
