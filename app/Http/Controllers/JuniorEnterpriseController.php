@@ -135,7 +135,6 @@ class JuniorEnterpriseController extends Controller
                     }
                 }
     
-    
                 return response()->json(['meta' => 
                     $goal->map(function($value, $key) {
                         return ['x'=>$key, 'y'=>$value];
@@ -220,7 +219,7 @@ class JuniorEnterpriseController extends Controller
 
 
             $resultResults = DB::table('projects')
-            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) as y')  
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , TRUNCATE(sum(projects.billing),2) as y')  
             ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
             ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
             ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
