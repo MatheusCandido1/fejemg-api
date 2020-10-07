@@ -231,6 +231,8 @@ class CoreController extends Controller
         }
         }
 
+
+
         return response()->json([
             'success_message' => 'Resultados!',
             'success_data' => $leaders
@@ -285,6 +287,7 @@ class CoreController extends Controller
             'yellow' => 0,
             'red' => 0
         ];
+
 
 
         return response()->json( $result);

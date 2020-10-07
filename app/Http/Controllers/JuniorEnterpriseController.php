@@ -352,6 +352,13 @@ class JuniorEnterpriseController extends Controller
             $jeGoals->junior_enterprise()->associate($ej);
             $jeGoals->save();
 
+
+            for($i = 1; $i < 13; $i++) {
+                DB::table('junior_enterprise_project')->insert([
+                    ['junior_enterprise_id' => $ej->id, 'project_id' => $i],
+                ]);
+            }
+
             
             $ej->services()->sync($request->services_id);
             $ej->degrees()->sync($request->degrees_id);
