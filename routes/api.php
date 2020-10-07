@@ -31,6 +31,7 @@ Route::get('nucleos/{id}/resultados/{year}', 'CoreController@getBillingResults')
 Route::get('nucleos/{id}/projetos/{year}', 'CoreController@getCoreProjectsByMonth');
 
 Route::get('nucleos/{id}/lideres/{year}', 'CoreController@getLeadersBattle');
+Route::get('nucleos/{id}/cluster/{year}', 'CoreController@getClusterByLight');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
