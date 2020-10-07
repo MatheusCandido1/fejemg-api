@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class JuniorEnterpriseGoal extends Model
 {
     protected $fillable = [
-        'year', 'billing', 'projects', 'members_performing', 'shared_actions', 'members_events', 'nps', 'impact_projects', 'members_performing_goal','current_nps','cluster','current_members_events','current_impact_projects'
+        'year', 'billing', 'projects', 'members_performing', 'shared_actions', 'members_events', 'nps', 'impact_projects', 'members_performing_goal','current_nps','cluster','current_members_events','current_impact_projects','current_shared_actions'
     ];
     public function junior_enterprise()
     {

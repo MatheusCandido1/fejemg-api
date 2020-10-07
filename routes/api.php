@@ -18,6 +18,7 @@ Route::post('/login', "UserController@login");
 
 Route::middleware('auth:api')->put('/profile', "UserController@profile");
 
+Route::get('populate', 'JuniorEnterpriseController@populate');
 Route::get('ejs/{id}/resultado/{year}', 'JuniorEnterpriseController@getGoalByYearWithSum');
 Route::get('ejs/{id}/metas/{year}', 'JuniorEnterpriseController@getGoalByYear');
 Route::get('ejs', 'JuniorEnterpriseController@index');
