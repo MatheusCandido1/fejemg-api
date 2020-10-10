@@ -161,7 +161,7 @@ class CoreController extends Controller
     {
         try {
             $cores = DB::table('cores')
-            ->selectRaw('cores.id as id, cores.color as core_color,  cores.name as name_nuc, format(SUM(projects.billing),2) as fat_nuc, sum(projects.project_quantity) as proj_nuc')
+            ->selectRaw('cores.id as id, cores.image as core_logo, cores.name as name_nuc, format(SUM(projects.billing),2) as fat_nuc, sum(projects.project_quantity) as proj_nuc')
             ->join('junior_enterprises','junior_enterprises.core_id', '=', 'cores.id')
             ->join('junior_enterprise_project','junior_enterprises.id', '=', 'junior_enterprise_project.junior_enterprise_id')
             ->join('projects','junior_enterprise_project.project_id', '=', 'projects.id')
