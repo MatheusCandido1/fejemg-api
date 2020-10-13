@@ -32,6 +32,56 @@ class FederationController extends Controller
         }
     }
 
+    public function GetFederationProjects($year) {
+        try {
+            $resultsResults = DB::table('projects')
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.project_quantity) as y')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+
+            $goal =  new Federation();
+            $goal = collect($goal->getFederationProjectsByMonth($year)->first());
+            
+            $newResult = collect([]);
+
+            if(sizeof($resultsResults) > 0) {
+                for($i = 0; $i < 12; $i++){
+                    $newResult[$i] = $resultsResults[$i];
+                }
+    
+                for($i = 0; $i < 12; $i++){
+                    if($i === 0){
+                        $newResult[$i]->y = $resultsResults[$i]->y + 0;
+                    }
+                    else{
+                    $newResult[$i]->y = $resultsResults[$i]->y + $resultsResults[$i - 1]->y;
+                    }
+                }
+            }
+
+            $results['project_results'] = $newResult;
+            $results['project_goal'] = $goal->map(function($value, $key) {
+                return ['x'=>$key, 'y'=>$value];
+            })->values();
+               
+            return response()->json([
+                'success_message' => 'Federação recuperada com sucesso!',
+                'success_data' => $results
+            ], 200);
+        
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }  
+    }
+
     public function GetFederationBilling($year) {
         try {
             $results[] = '';

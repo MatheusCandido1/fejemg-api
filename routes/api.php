@@ -37,6 +37,7 @@ Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
 
 Route::get('federacao/faturamento/{year}', 'FederationController@GetFederationBilling');
+Route::get('federacao/projetos/{year}', 'FederationController@GetFederationProjects');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('federacoes', 'FederationController@index');
