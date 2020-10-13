@@ -40,6 +40,7 @@ Route::get('federacao/projetos/{year}', 'FederationController@GetFederationProje
 
 Route::get('federacao/lideres/{year}','FederationController@GetLeadersBattle');
 Route::get('federacao/cluster/{year}', 'FederationController@GetClusterByLight');
+Route::get('federacao/nucleos/{year}', 'FederationController@GetLightByCore');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('federacoes', 'FederationController@index');

@@ -252,6 +252,75 @@ class FederationController extends Controller
         ], 200);
     }
 
+    public function GetLightByCore($year) {
+        $currentMonth = Carbon::now()->month;
+        $core = DB::table('cores')
+        ->selectRaw('cores.id as core_id, cores.name as core_name, cores.color as core_color, cores.image as core_image')
+        ->orderBy('cores.id', 'ASC')
+        ->get();
+        
+            $result = DB::table('junior_enterprises as ej')
+            ->selectRaw('ej.core_id as core ,ej.name,junior_enterprise_goals.cluster as cluster, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
+            ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
+            ->join('projects','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')    
+            ->join('cores','cores.id','=','ej.core_id')
+            ->where('junior_enterprise_goals.year', '=', $year)
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->groupBy('ej.name')
+            ->get();
+
+            $leaders['ac'] = [0,0,0,0,0,0,0];
+        $leaders['green'] = [0,0,0,0,0,0,0];
+        $leaders['yellow'] = [0,0,0,0,0,0,0];
+        $leaders['red'] = [0,0,0,0,0,0,0];
+
+
+        $newResult = collect();
+        for($i = 0; $i < sizeof($result); $i++) {
+            $newResult[$i] = $result[$i];
+            $newResult[$i]->porc = min( ((float) number_format( $result[$i]->porc_mem,3,'.','')), ((float) number_format( $result[$i]->porc_fat,3,'.','')),((float) number_format( $result[$i]->porc_proj,3,'.','')));
+
+       if($newResult[$i]->porc >= 100) {
+            for($x = 1; $x < 8; $x++){
+                if($newResult[$i]->core == $x){
+                    $leaders['ac'][$x-1] =  $leaders['ac'][$x-1] + 1;
+                }
+            }
+                
+        }
+
+        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < 100){
+            for($x = 1; $x < 8; $x++){
+                if($newResult[$i]->core == $x){
+                    $leaders['green'][$x-1] =  $leaders['green'][$x-1] + 1;
+                }
+            }
+        }
+
+        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth-1) * 8.3333){
+            for($x = 1; $x < 8; $x++){
+                if($newResult[$i]->core == $x){
+                    $leaders['yellow'][$x-1] =  $leaders['yellow'][$x-1] + 1;
+                }
+            }      
+            }
+
+        if($newResult[$i]->porc < ($currentMonth * 8.3333)){
+            for($x = 1; $x < 8; $x++){
+                if($newResult[$i]->core == $x){
+                    $leaders['red'][$x-1] =  $leaders['red'][$x-1] + 1;
+                }
+            } 
+            }
+        } 
+
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $leaders,
+            'core' => $core
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
