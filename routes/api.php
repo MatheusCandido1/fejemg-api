@@ -38,6 +38,8 @@ Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 Route::get('federacao/faturamento/{year}', 'FederationController@GetFederationBilling');
 Route::get('federacao/projetos/{year}', 'FederationController@GetFederationProjects');
 
+Route::get('federacao/lideres/{year}','FederationController@GetLeadersBattle');
+
 Route::middleware(['auth:api'])->group(function () {
     Route::get('federacoes', 'FederationController@index');
     Route::get('cursos', 'DegreeController@index');
