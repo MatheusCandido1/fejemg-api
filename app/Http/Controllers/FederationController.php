@@ -255,8 +255,9 @@ class FederationController extends Controller
     public function GetLightByCore($year) {
         $currentMonth = Carbon::now()->month;
         $core = DB::table('cores')
-        ->selectRaw('cores.id as core_id, cores.name as core_name, cores.color as core_color, cores.image as core_image')
-        ->orderBy('cores.id', 'ASC')
+        ->selectRaw('cores.id as core_id, count(junior_enterprises.id) as ej_quantity, cores.name as core_name, cores.color as core_color, cores.image as core_image')
+        ->join('junior_enterprises','junior_enterprises.core_id','=','cores.id')
+        ->orderBy('cores.id', 'ASC')->groupBy('cores.name')
         ->get();
         
             $result = DB::table('junior_enterprises as ej')
