@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 08-Out-2020 às 23:42
+-- Tempo de geração: 13-Out-2020 às 15:58
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.1
 
@@ -44,13 +44,13 @@ CREATE TABLE `cores` (
 --
 
 INSERT INTO `cores` (`id`, `name`, `cnpj`, `federation_id`, `created_at`, `updated_at`, `image`, `color`) VALUES
-(1, 'Núcleo Norte', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, ''),
-(2, 'Núcleo da Mata', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, ''),
+(1, 'Núcleo Norte', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd8e', '#0067e2'),
+(2, 'Núcleo da Mata', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd8g', '#054d4f'),
 (3, 'Núcleo Triângulo', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/ddqi', '#fb6e64'),
-(4, 'Núcleo Sul', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, ''),
-(5, 'Núcleo Vertentes', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, ''),
-(6, 'Núcleo Vale do Aço', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, ''),
-(7, 'Núcleo Central', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', NULL, '');
+(4, 'Núcleo Sul', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd8d', '#971d6f'),
+(5, 'Núcleo Vertentes', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd73', '#f9c800'),
+(6, 'Núcleo Vale do Aço', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd8f', '#ff7200'),
+(7, 'Núcleo Central', '00.000.000/0000-00', 1, '2020-09-29 22:18:23', '2020-09-29 22:18:23', 'https://hmp.me/dd74', '#e8306b');
 
 -- --------------------------------------------------------
 
@@ -81,7 +81,13 @@ CREATE TABLE `core_goals` (
 --
 
 INSERT INTO `core_goals` (`id`, `year`, `billing`, `projects`, `growth`, `mandala`, `connected`, `quantity`, `ies`, `junior_ies`, `impact`, `nps`, `core_id`, `created_at`, `updated_at`) VALUES
-(1, 2020, 1000000.00, 600, 0, 0, 0, 0, 0, 0, 0, 0, 3, '2020-10-01 03:00:00', '2020-10-01 03:00:00');
+(1, 2020, 725732.15, 711, 0, 0, 0, 0, 0, 0, 0, 0, 3, '2020-10-01 03:00:00', '2020-10-01 03:00:00'),
+(2, 2020, 64865.44, 44, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, NULL),
+(3, 2020, 1780081.55, 1080, 1, 1, 1, 1, 1, 1, 1, 1, 2, NULL, NULL),
+(4, 2020, 581790.24, 445, 1, 1, 1, 1, 1, 1, 1, 1, 4, NULL, NULL),
+(5, 2020, 472294.34, 397, 1, 1, 1, 1, 1, 1, 1, 1, 5, NULL, NULL),
+(6, 2020, 67194.25, 43, 1, 1, 1, 1, 1, 1, 1, 1, 6, NULL, NULL),
+(7, 2020, 1426232.44, 737, 1, 1, 1, 1, 1, 1, 1, 1, 7, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -154,7 +160,9 @@ INSERT INTO `degree_junior_enterprise` (`id`, `junior_enterprise_id`, `degree_id
 (23, 29, 7, NULL, NULL),
 (24, 30, 7, NULL, NULL),
 (25, 31, 7, NULL, NULL),
-(26, 34, 4, NULL, NULL);
+(26, 34, 4, NULL, NULL),
+(27, 35, 3, NULL, NULL),
+(28, 36, 3, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -201,6 +209,8 @@ INSERT INTO `federations` (`id`, `name`, `cnpj`, `created_at`, `updated_at`) VAL
 CREATE TABLE `federation_goals` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `year` int(11) NOT NULL,
+  `billing` decimal(11,2) NOT NULL,
+  `projects` int(11) NOT NULL,
   `growth` int(11) NOT NULL,
   `mandala` tinyint(1) NOT NULL,
   `connected` int(11) NOT NULL,
@@ -213,6 +223,13 @@ CREATE TABLE `federation_goals` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `federation_goals`
+--
+
+INSERT INTO `federation_goals` (`id`, `year`, `billing`, `projects`, `growth`, `mandala`, `connected`, `quantity`, `ies`, `junior_ies`, `impact`, `nps`, `federation_id`, `created_at`, `updated_at`) VALUES
+(1, 2020, '5118190.41', 3457, 0, 0, 0, 0, 0, 0, 0, 0, 1, '2020-10-12 03:00:00', '2020-10-12 03:00:00');
 
 -- --------------------------------------------------------
 
@@ -241,7 +258,9 @@ INSERT INTO `foundations` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (7, 'UFLA', '2020-09-29 22:18:23', '2020-09-29 22:18:23'),
 (8, 'UFSJ', '2020-10-07 03:00:00', '2020-10-07 03:00:00'),
 (9, 'UFOP', '2020-10-07 03:00:00', '2020-10-07 03:00:00'),
-(10, 'PUC', '2020-10-07 03:00:00', '2020-10-07 03:00:00');
+(10, 'PUC', '2020-10-07 03:00:00', '2020-10-07 03:00:00'),
+(11, 'UFVJM', NULL, NULL),
+(12, 'UNIMONTES', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -312,7 +331,9 @@ INSERT INTO `junior_enterprises` (`id`, `name`, `email`, `about`, `associated_si
 (31, 'Consea Jr', 'contato@conseja.com.br', 'Empresa Júnior de Consultoria da UFLA', '2018-01-01', '0000000', 'www.conseajr.com.br', 32, 7, 4, '2020-10-07 21:19:29', '2020-10-07 21:19:29'),
 (32, 'Civil Júnior', 'contato@civil.com', 'Empresa Júnior de Engenharia Civil da UFOP', '2008-01-01', '00000000', 'www.civiljr.com', 32, 9, 5, '2020-10-07 21:38:19', '2020-10-07 21:38:19'),
 (33, 'UCJ', 'contato@ucj.com.br', 'Empresa Júnior de Contabeis e Economia da UFMG', '2004-01-01', '00000000', 'www.ucj.com', 80, 2, 7, '2020-10-07 21:44:38', '2020-10-07 21:44:38'),
-(34, 'Projep', 'contato@projep.com.br', 'Empresa Júnior de Produção da UFTM', '2011-01-01', '00000000', 'www.projepjr.com.br', 34, 5, 3, '2020-10-07 21:46:45', '2020-10-07 21:46:45');
+(34, 'Projep', 'contato@projep.com.br', 'Empresa Júnior de Produção da UFTM', '2011-01-01', '00000000', 'www.projepjr.com.br', 34, 5, 3, '2020-10-07 21:46:45', '2020-10-07 21:46:45'),
+(35, 'Melius Jr', 'contato@meliusjr.com.br', 'Empresa Júnior de Engenharia da UFVJM', '2017-01-01', '000000000', 'www.meliusjr.com.br', 26, 11, 1, '2020-10-10 03:38:25', '2020-10-10 03:38:25'),
+(36, 'Metrus Jr', 'contato@metrusjr.com.br', 'Empresa Júnior de Engenharia de Montes Claros', '2007-01-01', '000000', 'www.metrusjr.com.br', 14, 12, 1, '2020-10-10 03:44:58', '2020-10-10 03:44:58');
 
 -- --------------------------------------------------------
 
@@ -366,7 +387,7 @@ INSERT INTO `junior_enterprise_goals` (`id`, `year`, `billing`, `projects`, `mem
 (22, 2020, '27000.00', 17, 92, 2, 56, 90, 9, 21, '2020-10-07 18:59:43', '2020-10-08 01:32:19', 75, 80, 3, 77, 10, 2),
 (23, 2020, '37500.00', 26, 65, 2, 68, 100, 0, 22, '2020-10-07 19:00:27', '2020-10-07 19:03:32', 75, 80, 3, 0, 0, 0),
 (24, 2020, '106000.00', 25, 100, 1, 80, 90, 12, 23, '2020-10-07 19:01:50', '2020-10-08 01:17:41', 75, 80, 5, 97, 13, 1),
-(25, 2020, '24000.00', 8, 93, 1, 80, 100, 0, 24, '2020-10-07 19:21:27', '2020-10-07 19:21:58', 75, 55, 3, 0, 0, 0),
+(25, 2020, '24000.00', 8, 93, 1, 80, 100, 3, 24, '2020-10-07 19:21:27', '2020-10-10 04:07:05', 75, 55, 3, 89, 4, 2),
 (26, 2020, '0.00', 0, 0, 0, 0, 0, 0, 25, '2020-10-07 19:23:18', '2020-10-07 19:23:18', 0, 0, 1, 0, 0, 0),
 (27, 2020, '24800.00', 22, 71, 2, 80, 100, 12, 26, '2020-10-07 19:24:48', '2020-10-08 01:43:11', 75, 80, 2, 83, 8, 2),
 (28, 2020, '57000.00', 17, 63, 3, 47, 75, 0, 27, '2020-10-07 19:25:46', '2020-10-07 19:28:48', 75, 76, 2, 0, 0, 0),
@@ -376,7 +397,9 @@ INSERT INTO `junior_enterprise_goals` (`id`, `year`, `billing`, `projects`, `mem
 (32, 2020, '30054.00', 30, 47, 3, 65, 60, 0, 31, '2020-10-07 21:19:29', '2020-10-07 21:36:47', 75, 100, 1, 0, 0, 0),
 (33, 2020, '27165.00', 28, 95, 5, 70, 100, 0, 32, '2020-10-07 21:38:19', '2020-10-07 21:41:57', 75, 78, 2, 0, 0, 0),
 (34, 2020, '307588.31', 81, 82, 2, 80, 81, 0, 33, '2020-10-07 21:44:38', '2020-10-07 21:52:16', 75, 70, 5, 27, 0, 0),
-(35, 2020, '40000.00', 16, 100, 1, 80, 100, 9, 34, '2020-10-07 21:46:45', '2020-10-08 01:41:43', 75, 100, 3, 96, 9, 1);
+(35, 2020, '40000.00', 16, 100, 1, 80, 100, 9, 34, '2020-10-07 21:46:45', '2020-10-08 01:41:43', 75, 100, 3, 96, 9, 1),
+(36, 2020, '7501.07', 3, 78, 1, 51, 10, 2, 35, '2020-10-10 03:38:25', '2020-10-10 03:40:49', 75, 50, 1, 43, 25, 0),
+(37, 2020, '30000.00', 25, 83, 1, 80, 100, 9, 36, '2020-10-10 03:44:58', '2020-10-10 03:46:18', 75, 50, 1, 71, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -844,7 +867,47 @@ INSERT INTO `junior_enterprise_project` (`id`, `junior_enterprise_id`, `project_
 (485, 26, 128, NULL, NULL),
 (486, 26, 129, NULL, NULL),
 (487, 26, 130, NULL, NULL),
-(488, 26, 131, NULL, NULL);
+(488, 26, 131, NULL, NULL),
+(489, 35, 1, NULL, NULL),
+(490, 35, 2, NULL, NULL),
+(491, 35, 3, NULL, NULL),
+(492, 35, 4, NULL, NULL),
+(493, 35, 5, NULL, NULL),
+(494, 35, 6, NULL, NULL),
+(495, 35, 7, NULL, NULL),
+(496, 35, 8, NULL, NULL),
+(497, 35, 9, NULL, NULL),
+(498, 35, 10, NULL, NULL),
+(499, 35, 11, NULL, NULL),
+(500, 35, 12, NULL, NULL),
+(501, 35, 132, NULL, NULL),
+(502, 35, 133, NULL, NULL),
+(503, 35, 134, NULL, NULL),
+(504, 36, 1, NULL, NULL),
+(505, 36, 2, NULL, NULL),
+(506, 36, 3, NULL, NULL),
+(507, 36, 4, NULL, NULL),
+(508, 36, 5, NULL, NULL),
+(509, 36, 6, NULL, NULL),
+(510, 36, 7, NULL, NULL),
+(511, 36, 8, NULL, NULL),
+(512, 36, 9, NULL, NULL),
+(513, 36, 10, NULL, NULL),
+(514, 36, 11, NULL, NULL),
+(515, 36, 12, NULL, NULL),
+(516, 36, 135, NULL, NULL),
+(517, 36, 136, NULL, NULL),
+(518, 36, 137, NULL, NULL),
+(519, 36, 138, NULL, NULL),
+(520, 36, 139, NULL, NULL),
+(521, 36, 140, NULL, NULL),
+(522, 36, 141, NULL, NULL),
+(523, 24, 142, NULL, NULL),
+(524, 24, 143, NULL, NULL),
+(525, 24, 144, NULL, NULL),
+(526, 24, 145, NULL, NULL),
+(527, 24, 146, NULL, NULL),
+(528, 24, 147, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -894,7 +957,9 @@ INSERT INTO `junior_enterprise_service` (`id`, `junior_enterprise_id`, `service_
 (27, 29, 6, NULL, NULL),
 (28, 30, 6, NULL, NULL),
 (29, 31, 10, NULL, NULL),
-(30, 34, 9, NULL, NULL);
+(30, 34, 9, NULL, NULL),
+(31, 35, 5, NULL, NULL),
+(32, 36, 5, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -967,12 +1032,17 @@ CREATE TABLE `oauth_access_tokens` (
 --
 
 INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes`, `revoked`, `created_at`, `updated_at`, `expires_at`) VALUES
+('02972de50d54229c0c49aadc69bf8623b4be314dd83eae840aa683afd7fc9220b156994b3d619f0c', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-10 04:29:11', '2020-10-10 04:29:11', '2021-10-10 01:29:11'),
 ('1764f88b81ef9766bd826ddc04de8d316f58a4c023879f328a5882192454838f8282d10018a25c1d', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-06 17:34:35', '2020-10-06 17:34:35', '2021-10-06 14:34:35'),
 ('408f8c9dd2a7e25c11821c915e5b8f30bb85e0e26ef97597a2f30ed18048f38da3ebf133ef225c08', 1, 1, 'matheus@email.com', '[]', 0, '2020-09-29 22:31:05', '2020-09-29 22:31:05', '2021-09-29 19:31:05'),
 ('6243d1edc1ef0968b4eca97d3f19bc83f7321eacbf29241890830c1677e64702b2efcd0fe3c2a390', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-01 20:38:03', '2020-10-01 20:38:03', '2021-10-01 17:38:03'),
+('71808ead0b164cf506df426ed6154657ba08d49bf3e888e374a16a587f8c145c4340d93d6a0ebf8f', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-13 04:23:27', '2020-10-13 04:23:27', '2021-10-13 01:23:27'),
 ('766372758169b9be2c7835964a2846018f3dc202b3f688804c00a7d02add569a46b6af0a87452acc', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-07 17:39:17', '2020-10-07 17:39:17', '2021-10-07 14:39:17'),
 ('7ad0d9c4140d2c4672c60503beda045838429b3bbe50fff278937aa682cfd44628f0dea4ebe2e22c', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-02 17:43:19', '2020-10-02 17:43:19', '2021-10-02 14:43:19'),
 ('ade8a1647a91ede85b64b335f6c3df0eb7a091e5ec1cb33b4d1c83f2fffe848cbf7b10b5c524aa1b', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-01 23:42:00', '2020-10-01 23:42:00', '2021-10-01 20:42:00'),
+('be51fd00f83079c93ddbab57aeec445170ef13d6261eb566a7997493a9b8afdf9dc75628fccc43e0', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-10 04:28:32', '2020-10-10 04:28:32', '2021-10-10 01:28:32'),
+('c71b69e9799c801c3aa5cd6aec98c400856411368b78c5752d442b1a60bda712554b3796b758150f', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-13 16:56:58', '2020-10-13 16:56:58', '2021-10-13 13:56:58'),
+('cfe07e8beeca0463a3d2e6953e639b421ecb610449abbe367900f9eb1897de6d4fdfcacef18761f4', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-10 03:11:37', '2020-10-10 03:11:37', '2021-10-10 00:11:37'),
 ('d37477cbc92b917bb273c42377ec32c0f23bfceb562bbd08c4bd47e6afddd136cb5ac893220f2729', 1, 1, 'matheus@email.com', '[]', 0, '2020-10-01 23:21:42', '2020-10-01 23:21:42', '2021-10-01 20:21:42'),
 ('eb4a64b44c1d6c1b2db3b466a8585948f083469bb0b40b68999024414985645169f7aad4f0c972f9', 1, 1, 'matheus@email.com', '[]', 0, '2020-09-29 22:30:42', '2020-09-29 22:30:42', '2021-09-29 19:30:42');
 
@@ -1224,7 +1294,23 @@ INSERT INTO `projects` (`id`, `signature_date`, `due_date`, `working_days`, `pro
 (128, '2020-06-01', '2020-06-07', 5, 1, '1140.00', 0, NULL, NULL, '2020-10-08 01:44:11', '2020-10-08 01:44:11'),
 (129, '2020-07-01', '2020-07-07', 5, 2, '6700.00', 0, NULL, NULL, '2020-10-08 01:45:05', '2020-10-08 01:45:05'),
 (130, '2020-08-01', '2020-08-07', 5, 9, '3730.00', 0, NULL, NULL, '2020-10-08 01:45:22', '2020-10-08 01:45:22'),
-(131, '2020-09-01', '2020-09-07', 5, 9, '7400.00', 0, NULL, NULL, '2020-10-08 01:45:45', '2020-10-08 01:45:45');
+(131, '2020-09-01', '2020-09-07', 5, 9, '7400.00', 0, NULL, NULL, '2020-10-08 01:45:45', '2020-10-08 01:45:45'),
+(132, '2020-07-01', '2020-07-07', 5, 3, '3365.00', 0, NULL, NULL, '2020-10-10 03:41:37', '2020-10-10 03:41:37'),
+(133, '2020-08-01', '2020-08-07', 5, 6, '1887.12', 0, NULL, NULL, '2020-10-10 03:42:03', '2020-10-10 03:42:03'),
+(134, '2020-09-01', '2020-09-07', 5, 3, '373.69', 0, NULL, NULL, '2020-10-10 03:42:29', '2020-10-10 03:42:29'),
+(135, '2020-02-01', '2020-02-07', 5, 4, '11100.00', 0, NULL, NULL, '2020-10-10 03:47:13', '2020-10-10 03:47:13'),
+(136, '2020-03-01', '2020-03-07', 5, 1, '768.00', 0, NULL, NULL, '2020-10-10 03:48:09', '2020-10-10 03:48:09'),
+(137, '2020-04-01', '2020-04-07', 5, 1, '300.00', 0, NULL, NULL, '2020-10-10 03:48:33', '2020-10-10 03:48:33'),
+(138, '2020-05-01', '2020-05-07', 5, 4, '6000.00', 0, NULL, NULL, '2020-10-10 03:48:59', '2020-10-10 03:48:59'),
+(139, '2020-06-01', '2020-06-07', 5, 2, '1115.00', 0, NULL, NULL, '2020-10-10 03:49:41', '2020-10-10 03:49:41'),
+(140, '2020-07-01', '2020-07-07', 5, 1, '25.00', 0, NULL, NULL, '2020-10-10 03:50:14', '2020-10-10 03:50:14'),
+(141, '2020-09-01', '2020-09-07', 5, 12, '8654.25', 0, NULL, NULL, '2020-10-10 03:50:48', '2020-10-10 03:50:48'),
+(142, '2020-03-01', '2020-03-07', 5, 2, '3000.00', 0, NULL, NULL, '2020-10-10 04:03:18', '2020-10-10 04:03:18'),
+(143, '2020-04-01', '2020-04-07', 5, 2, '2066.46', 0, NULL, NULL, '2020-10-10 04:03:53', '2020-10-10 04:03:53'),
+(144, '2020-06-01', '2020-06-07', 5, 3, '4388.64', 0, NULL, NULL, '2020-10-10 04:04:22', '2020-10-10 04:04:22'),
+(145, '2020-07-01', '2020-07-07', 5, 1, '1749.99', 0, NULL, NULL, '2020-10-10 04:04:53', '2020-10-10 04:04:53'),
+(146, '2020-08-01', '2020-08-07', 5, 3, '7911.12', 0, NULL, NULL, '2020-10-10 04:05:22', '2020-10-10 04:05:22'),
+(147, '2020-09-01', '2020-09-07', 5, 2, '6333.96', 0, NULL, NULL, '2020-10-10 04:05:54', '2020-10-10 04:05:54');
 
 -- --------------------------------------------------------
 
@@ -1454,7 +1540,7 @@ ALTER TABLE `cores`
 -- AUTO_INCREMENT de tabela `core_goals`
 --
 ALTER TABLE `core_goals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `degrees`
@@ -1466,7 +1552,7 @@ ALTER TABLE `degrees`
 -- AUTO_INCREMENT de tabela `degree_junior_enterprise`
 --
 ALTER TABLE `degree_junior_enterprise`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `failed_jobs`
@@ -1484,13 +1570,13 @@ ALTER TABLE `federations`
 -- AUTO_INCREMENT de tabela `federation_goals`
 --
 ALTER TABLE `federation_goals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `foundations`
 --
 ALTER TABLE `foundations`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `images`
@@ -1502,25 +1588,25 @@ ALTER TABLE `images`
 -- AUTO_INCREMENT de tabela `junior_enterprises`
 --
 ALTER TABLE `junior_enterprises`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de tabela `junior_enterprise_goals`
 --
 ALTER TABLE `junior_enterprise_goals`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de tabela `junior_enterprise_project`
 --
 ALTER TABLE `junior_enterprise_project`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=489;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=529;
 
 --
 -- AUTO_INCREMENT de tabela `junior_enterprise_service`
 --
 ALTER TABLE `junior_enterprise_service`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de tabela `migrations`
@@ -1556,7 +1642,7 @@ ALTER TABLE `ods_project`
 -- AUTO_INCREMENT de tabela `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT de tabela `services`
