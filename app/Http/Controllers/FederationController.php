@@ -322,6 +322,53 @@ class FederationController extends Controller
             'core' => $core
         ], 200);
     }
+
+    public function GetBillingByCore($year) {
+        $resultResults = DB::table('cores')
+        ->selectRaw('cores.name as x, SUM(projects.billing) as y')
+        ->join('junior_enterprises','junior_enterprises.core_id', '=', 'cores.id')
+        ->join('core_goals','cores.id','=','core_goals.core_id')
+        ->join('junior_enterprise_project','junior_enterprises.id', '=', 'junior_enterprise_project.junior_enterprise_id')
+        ->join('projects','junior_enterprise_project.project_id', '=', 'projects.id')
+        ->where(DB::raw('YEAR(projects.signature_date)'),'=', $year)
+        ->where('core_goals.year','=', $year)
+        ->groupBy('cores.name')
+        ->orderBy('cores.id','asc')
+        ->get();
+        
+        
+        $newResult = collect([]);
+            
+            if(sizeof($resultResults) > 0) {
+                for($i = 0; $i < 7; $i++){
+                    $newResult[$i] = $resultResults[$i];
+                }
+    
+                for($i = 0; $i < 7; $i++){
+                    $newResult[$i]->y = (float) number_format($newResult[$i]->y,2,'.','');
+                }
+            } 
+
+            $colors = [];
+
+            $core = DB::table('cores')
+            ->selectRaw('cores.id as core_id, count(junior_enterprises.id) as ej_quantity, cores.name as core_name, cores.color as core_color, cores.image as core_image')
+            ->join('junior_enterprises','junior_enterprises.core_id','=','cores.id')
+            ->orderBy('cores.id', 'ASC')->groupBy('cores.name')
+            ->get();
+
+            for($p = 0; $p < 7; $p++){
+                $colors[$p] = $core[$p]->core_color;
+            }
+            
+
+        return response()->json([
+            'success_message' => 'Resultados recuperados com sucesso!',
+            'core' => $colors,
+            'success_data' => $newResult
+            
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
