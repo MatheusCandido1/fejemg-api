@@ -35,6 +35,9 @@ Route::get('nucleos/{id}/cluster/{year}', 'CoreController@getClusterByLight');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
+
+Route::get('federacao/faturamento/{year}', 'FederationController@GetFederationBilling');
+
 Route::middleware(['auth:api'])->group(function () {
     Route::get('federacoes', 'FederationController@index');
     Route::get('cursos', 'DegreeController@index');

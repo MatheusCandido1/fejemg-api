@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Federation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class FederationController extends Controller
@@ -23,6 +24,63 @@ class FederationController extends Controller
             ], 200);
         }
         catch(\Exception $e){
+            return response()->json([
+                'error_type' => 'Erro no servidor',
+                'error_message' => 'Aconteceu um erro interno',
+                'error_description' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function GetFederationBilling($year) {
+        try {
+            $results[] = '';
+
+
+            $resultResults = DB::table('projects')
+            ->selectRaw('date_format(projects.signature_date, "%b") as x , sum(projects.billing) as y')  
+            ->join('junior_enterprise_project','projects.id','=','junior_enterprise_project.project_id')
+            ->join('junior_enterprises','junior_enterprises.id','=','junior_enterprise_project.junior_enterprise_id')
+            ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+            ->groupBy(DB::raw('MONTH(projects.signature_date)'))
+            ->get();
+
+
+            $newResult = collect([]);
+            
+            if(sizeof($resultResults) > 0) {
+                for($i = 0; $i < 12; $i++){
+                    $newResult[$i] = $resultResults[$i];
+                }
+    
+                for($i = 0; $i < 12; $i++){
+                    if($i === 0){
+                        $newResult[$i]->y = $newResult[$i]->y + 0;
+                    }
+                    else{
+                    $newResult[$i]->y = $newResult[$i]->y + $newResult[$i - 1]->y;
+                    }
+                    $newResult[$i]->y = (float) number_format( $newResult[$i]->y,2,'.','');
+
+                }
+            } 
+
+            $federation_goal =  new Federation();
+            $goal = collect($federation_goal->getFederationGoalByMonth($year)->first());
+
+
+            $results['billing_results'] = $resultResults;
+            $results['billing_goal'] = $goal->map(function($value, $key) {
+                return ['x'=>$key, 'y'=>(float) number_format( $value,2,'.','')];
+            })->values();
+
+
+            return response()->json([
+                'success_message' => 'Federação recuperada com sucesso!',
+                'success_data' => $results
+            ], 200);
+
+        } catch(\Exception $e){
             return response()->json([
                 'error_type' => 'Erro no servidor',
                 'error_message' => 'Aconteceu um erro interno',

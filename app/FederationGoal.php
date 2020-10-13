@@ -10,4 +10,6 @@ class FederationGoal extends Model
     {
         return $this->belongsTo('App\Federation');
     }
+
+    
 }
