@@ -441,8 +441,6 @@ class FederationController extends Controller
         $leaders['red'] = 0;
         $ejs = [];
 
-
-        
         $newResult = collect(['id']);
 
         for($i = 0; $i < sizeof($result); $i++) {
@@ -467,6 +465,13 @@ class FederationController extends Controller
         return response()->json([
             'success_message' => 'Resultados!',
             'ejs' => $ejs
+        ], 200);
+    }
+
+    public function GetEjsConnectedStatus($year){
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => true
         ], 200);
     }
     /**

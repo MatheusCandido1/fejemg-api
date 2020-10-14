@@ -44,6 +44,8 @@ Route::get('federacao/nucleos/{year}', 'FederationController@GetLightByCore');
 
 Route::get('federacao/conectados/{year}','FederationController@GetEjsConnected');
 
+Route::get('federacao/conectados/resultados/{year}','FederationController@GetEjsConnectedStatus');
+
 Route::get('federacao/faturamento/nucleos/{year}', 'FederationController@GetBillingByCore');
 
 Route::middleware(['auth:api'])->group(function () {
