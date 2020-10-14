@@ -192,11 +192,12 @@ class CoreController extends Controller
         $currentMonth = Carbon::now()->month;
 
         $result = DB::table('junior_enterprises as ej')
-        ->selectRaw('ej.id as id_ej, ej.name as name, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
+        ->selectRaw('ej.id as id_ej, ej.name as name, foundations.name as ies, cores.name as core, cores.color as color, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
         ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
         ->join('projects','projects.id','=','junior_enterprise_project.project_id')
-        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')    
-        ->join('cores','cores.id','=','ej.core_id')
+        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')  
         ->where('ej.core_id','=', $id)
         ->where('junior_enterprise_goals.year', '=', $year)
         ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
@@ -222,24 +223,40 @@ class CoreController extends Controller
 
         if($newResult[$i]->porc >= 100){
             $leaders['ac'] = $leaders['ac'] + 1;
-            $ejs['ac'][] = $newResult[$i]->name;
+            $ejs['ac'][] = [
+                'id' => $newResult[$i]->id_ej,
+                'name' => $newResult[$i]->name,
+                'ies' =>  $newResult[$i]->ies,
+            ];
         }
 
         if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < 100){
             $leaders['green'] = $leaders['green'] + 1;
-            $ejs['green'][] = $newResult[$i]->name;
+            $ejs['green'][] = [
+                'id' => $newResult[$i]->id_ej,
+                'name' => $newResult[$i]->name,
+                'ies' =>  $newResult[$i]->ies,
+            ];
 
         }
 
         if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             $leaders['yellow'] = $leaders['yellow'] + 1;
-            $ejs['yellow'][] = $newResult[$i]->name;
+            $ejs['yellow'][] = [
+                'id' => $newResult[$i]->id_ej,
+                'name' => $newResult[$i]->name,
+                'ies' =>  $newResult[$i]->ies,
+            ];
 
         }
 
         if($newResult[$i]->porc < ($currentMonth * 8.3333)){
             $leaders['red'] = $leaders['red'] + 1;
-            $ejs['red'][] = $newResult[$i]->name;
+            $ejs['red'][] = [
+                'id' => $newResult[$i]->id_ej,
+                'name' => $newResult[$i]->name,
+                'ies' =>  $newResult[$i]->ies,
+            ];
 
         }
         }
