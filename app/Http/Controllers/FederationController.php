@@ -418,6 +418,57 @@ class FederationController extends Controller
             
         ], 200);
     }
+
+    public function GetEjsConnected($year) {
+        $currentMonth = Carbon::now()->month;
+
+        $result = DB::table('junior_enterprises as ej')
+        ->selectRaw('ej.id as id_ej, junior_enterprise_goals.cluster as cluster, ej.name as name, foundations.name as ies, cores.id as core_id, cores.name as core, cores.color as color, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem, truncate(((junior_enterprise_goals.current_shared_actions) / (junior_enterprise_goals.shared_actions))*100,6) as porc_shared,truncate(((junior_enterprise_goals.current_members_events) / (junior_enterprise_goals.members_events))*100,6) as porc_event')  
+        ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
+        ->join('projects','projects.id','=','junior_enterprise_project.project_id')
+        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')  
+        ->where('junior_enterprise_goals.year', '=', $year)
+        ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+        ->groupBy('ej.id')
+        ->get();
+
+
+        $leaders['ac'] = 0;
+        $leaders['green'] = 0;
+        $leaders['yellow'] = 0;
+        $leaders['red'] = 0;
+        $ejs = [];
+
+
+        
+        $newResult = collect(['id']);
+
+        for($i = 0; $i < sizeof($result); $i++) {
+            $newResult[$i] = $result[$i];
+            $newResult[$i]->porc = min( ((float) number_format( $result[$i]->porc_mem,3,'.','')), ((float) number_format( $result[$i]->porc_fat,3,'.','')),((float) number_format( $result[$i]->porc_proj,3,'.','')));
+            $newResult[$i]->porc_connected = min( ((float) number_format($result[$i]->porc_shared,3,'.','')), ((float) number_format($result[$i]->porc_event,3,'.','')));
+            if($newResult[$i]->porc >= 100 && $newResult[$i]->porc_connected >= 100) {
+                $ejs[] = [
+                    'id' => $newResult[$i]->id_ej,  
+                    'name' => $newResult[$i]->name,
+                    'ies' => $newResult[$i]->ies,
+                    'cluster' => $newResult[$i]->cluster,
+                    'core' => [
+                        'id' => $newResult[$i]->core_id,
+                        'name' => $newResult[$i]->core,
+                        'color' => $newResult[$i]->color,
+                    ],
+                ];
+            }
+        }
+
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'ejs' => $ejs
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
