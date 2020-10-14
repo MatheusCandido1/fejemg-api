@@ -144,7 +144,7 @@ class FederationController extends Controller
         $currentMonth = Carbon::now()->month;
 
         $result = DB::table('junior_enterprises as ej')
-        ->selectRaw('ej.id as id_ej, ej.name as name, foundations.name as ies, cores.name as core, cores.color as color, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
+        ->selectRaw('ej.id as id_ej, ej.name as name, foundations.name as ies, cores.id as core_id, cores.name as core, cores.color as color, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
         ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
         ->join('projects','projects.id','=','junior_enterprise_project.project_id')
         ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
@@ -177,9 +177,12 @@ class FederationController extends Controller
             $ejs['ac'][] = [
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
-                'core' => $newResult[$i]->core,
                 'ies' =>  $newResult[$i]->ies,
-                'color' => $newResult[$i]->color
+                'core' => [
+                    'id' => $newResult[$i]->core_id,
+                    'name' => $newResult[$i]->core,
+                    'color' => $newResult[$i]->color
+                ]
             ];
             
         }
@@ -189,9 +192,12 @@ class FederationController extends Controller
             $ejs['green'][] = [
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
-                'core' => $newResult[$i]->core,
                 'ies' =>  $newResult[$i]->ies,
-                'color' => $newResult[$i]->color
+                'core' => [
+                    'id' => $newResult[$i]->core_id,
+                    'name' => $newResult[$i]->core,
+                    'color' => $newResult[$i]->color
+                ]
             ];
         }
 
@@ -200,9 +206,12 @@ class FederationController extends Controller
             $ejs['yellow'][] = [
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
-                'core' => $newResult[$i]->core,
                 'ies' =>  $newResult[$i]->ies,
-                'color' => $newResult[$i]->color
+                'core' => [
+                    'id' => $newResult[$i]->core_id,
+                    'name' => $newResult[$i]->core,
+                    'color' => $newResult[$i]->color
+                ]
             ];
         }
 
@@ -211,9 +220,12 @@ class FederationController extends Controller
             $ejs['red'][] = [
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
-                'core' => $newResult[$i]->core,
                 'ies' =>  $newResult[$i]->ies,
-                'color' => $newResult[$i]->color
+                'core' => [
+                    'id' => $newResult[$i]->core_id,
+                    'name' => $newResult[$i]->core,
+                    'color' => $newResult[$i]->color
+                ]
             ];
         }
         }
