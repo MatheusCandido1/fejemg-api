@@ -316,6 +316,7 @@ class FederationController extends Controller
             }
         } 
 
+
         return response()->json([
             'success_message' => 'Resultados!',
             'success_data' => $leaders,
