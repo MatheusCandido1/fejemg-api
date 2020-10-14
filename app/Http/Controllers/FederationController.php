@@ -144,7 +144,7 @@ class FederationController extends Controller
         $currentMonth = Carbon::now()->month;
 
         $result = DB::table('junior_enterprises as ej')
-        ->selectRaw('ej.id as id_ej, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
+        ->selectRaw('ej.id as id_ej, ej.name as name, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
         ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
         ->join('projects','projects.id','=','junior_enterprise_project.project_id')
         ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')    
@@ -158,6 +158,10 @@ class FederationController extends Controller
         $leaders['green'] = 0;
         $leaders['yellow'] = 0;
         $leaders['red'] = 0;
+        $ejs['ac'] = [];
+        $ejs['green'] =[];
+        $ejs['yellow'] =[];
+        $ejs['red'] =[];
 
         
         $newResult = collect(['id']);
@@ -168,24 +172,29 @@ class FederationController extends Controller
 
         if($newResult[$i]->porc >= 100){
             $leaders['ac'] = $leaders['ac'] + 1;
+            $ejs['ac'][] = $newResult[$i]->name;
         }
 
         if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < 100){
             $leaders['green'] = $leaders['green'] + 1;
+            $ejs['green'][] = $newResult[$i]->name;
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth+1) * 8.3333){
+        if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             $leaders['yellow'] = $leaders['yellow'] + 1;
+            $ejs['yellow'][] = $newResult[$i]->name;
         }
 
         if($newResult[$i]->porc < ($currentMonth * 8.3333)){
             $leaders['red'] = $leaders['red'] + 1;
+            $ejs['red'][] = $newResult[$i]->name;
         }
         }
 
         return response()->json([
             'success_message' => 'Resultados!',
-            'success_data' => $leaders
+            'success_data' => $leaders,
+            'ejs' => $ejs
         ], 200);
     }
 
@@ -229,7 +238,7 @@ class FederationController extends Controller
             }
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth-1) * 8.3333){
+        if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             for($x = 1; $x < 6; $x++){
                 if($newResult[$i]->cluster == $x){
                     $leaders['yellow'][$x-1] =  $leaders['yellow'][$x-1] + 1;
@@ -299,7 +308,7 @@ class FederationController extends Controller
             }
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth-1) * 8.3333){
+        if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             for($x = 1; $x < 8; $x++){
                 if($newResult[$i]->core == $x){
                     $leaders['yellow'][$x-1] =  $leaders['yellow'][$x-1] + 1;

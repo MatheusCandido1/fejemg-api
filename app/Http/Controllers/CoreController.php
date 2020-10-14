@@ -231,7 +231,7 @@ class CoreController extends Controller
 
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth+1) * 8.3333){
+        if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             $leaders['yellow'] = $leaders['yellow'] + 1;
             $ejs['yellow'][] = $newResult[$i]->name;
 
@@ -293,7 +293,7 @@ class CoreController extends Controller
             }
         }
 
-        if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < ($currentMonth-1) * 8.3333){
+        if($newResult[$i]->porc >= (($currentMonth-1) * 8.33333) && $newResult[$i]->porc  < ($currentMonth) * 8.3333){
             for($x = 1; $x < 6; $x++){
                 if($newResult[$i]->cluster == $x){
                     $leaders['yellow'][$x-1] =  $leaders['yellow'][$x-1] + 1;
@@ -312,7 +312,8 @@ class CoreController extends Controller
 
         return response()->json([
             'success_message' => 'Resultados!',
-            'success_data' => $leaders
+            'success_data' => $leaders,
+            'result' => $result
         ], 200);
     }
 
