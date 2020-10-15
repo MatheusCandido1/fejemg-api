@@ -526,6 +526,13 @@ class FederationController extends Controller
             'success_data' => $connected,
         ], 200);
     }
+
+    public function GetStateGoals(){
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $teste,
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
