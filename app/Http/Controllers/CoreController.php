@@ -466,15 +466,14 @@ class CoreController extends Controller
         ->first();
 
         $ies = DB::table('foundations as f')
-        ->selectRaw('count(f.id) as qnt') 
+        ->selectRaw('count(distinct(f.id)) as qnt') 
         ->join('junior_enterprises','junior_enterprises.foundation_id','=','f.id')
         ->join('cores','junior_enterprises.core_id','=','cores.id')
         ->where('junior_enterprises.core_id', $id)
-        ->where('f.ies_junior',0)
         ->first();
 
         $ies_junior = DB::table('foundations as f')
-        ->selectRaw('count(f.id) as qnt') 
+        ->selectRaw('count(distinct(f.id)) as qnt') 
         ->join('junior_enterprises','junior_enterprises.foundation_id','=','f.id')
         ->join('cores','junior_enterprises.core_id','=','cores.id')
         ->where('junior_enterprises.core_id', $id)
@@ -497,7 +496,6 @@ class CoreController extends Controller
             ->selectRaw('cores.color as color')
             ->where('cores.id','=',$id)
             ->first();
-
         
 
         return response()->json([
