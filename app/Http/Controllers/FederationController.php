@@ -527,10 +527,54 @@ class FederationController extends Controller
         ], 200);
     }
 
-    public function GetStateGoals(){
+    public function GetStateGoals($year){
+        $state = [];
+        $state['goal'] = DB::table('federations as c')
+        ->selectRaw('meta.billing_by_member, meta.ies, meta.junior_ies, meta.ejs as ej_quantity')
+        ->join('federation_goals as meta','c.id','=','meta.federation_id')
+        ->where('c.id',1)
+        ->where('meta.year','=',$year)
+        ->first();
+
+       $total = DB::table('junior_enterprises as ej')
+        ->selectRaw('sum(projects.billing) as total')  
+        ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
+        ->join('projects','projects.id','=','junior_enterprise_project.project_id')
+        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')  
+        ->where('junior_enterprise_goals.year', '=', $year)
+        ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+        ->first();
+
+       $members = DB::table('junior_enterprises as ej')
+        ->selectRaw('sum(ej.members) as members')  
+        ->first();
+
+        $ies = DB::table('foundations as f')
+        ->selectRaw('count(f.id) as qnt')  
+        ->first();
+
+        $ies_junior = DB::table('foundations as f')
+        ->selectRaw('count(f.id) as qnt')  
+        ->where('f.ies_junior',1)
+        ->first();
+
+        $ej = DB::table('junior_enterprises as ej')
+        ->selectRaw('count(ej.id) as qnt')  
+        ->first();
+
+        $state['result'] = [
+            'billing_by_member' => number_format(($total->total / $members->members),2),
+            'current_ies' => $ies->qnt,
+            'current_ies_junior' => $ies_junior->qnt,
+            'ej_quantity' => $ej->qnt,
+        ];
+        
+
         return response()->json([
             'success_message' => 'Resultados!',
-            'success_data' => $teste,
+            'success_data' => $state,
         ], 200);
     }
     /**
