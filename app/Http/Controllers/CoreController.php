@@ -438,6 +438,75 @@ class CoreController extends Controller
         ], 200);
     }
 
+    public function GetStateCoreGoals($id, $year) {
+        $state = [];
+        $state['goal'] = DB::table('cores as c')
+        ->selectRaw('meta.billing_by_member, meta.ies, meta.junior_ies, meta.quantity as ej_quantity')
+        ->join('core_goals as meta','c.id','=','meta.core_id')
+        ->where('c.id',$id)
+        ->where('meta.year','=',$year)
+        ->first();
+
+      $total = DB::table('junior_enterprises as ej')
+        ->selectRaw('sum(projects.billing) as total')  
+        ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
+        ->join('projects','projects.id','=','junior_enterprise_project.project_id')
+        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')  
+        ->where('ej.core_id',$id)
+        ->where('junior_enterprise_goals.year', '=', $year)
+        ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+        ->first();
+
+        $members = DB::table('junior_enterprises as ej')
+        ->selectRaw('sum(ej.members) as members') 
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->where('ej.core_id',$id)
+        ->first();
+
+        $ies = DB::table('foundations as f')
+        ->selectRaw('count(f.id) as qnt') 
+        ->join('junior_enterprises','junior_enterprises.foundation_id','=','f.id')
+        ->join('cores','junior_enterprises.core_id','=','cores.id')
+        ->where('junior_enterprises.core_id', $id)
+        ->where('f.ies_junior',0)
+        ->first();
+
+        $ies_junior = DB::table('foundations as f')
+        ->selectRaw('count(f.id) as qnt') 
+        ->join('junior_enterprises','junior_enterprises.foundation_id','=','f.id')
+        ->join('cores','junior_enterprises.core_id','=','cores.id')
+        ->where('junior_enterprises.core_id', $id)
+        ->where('f.ies_junior',1)
+        ->first();
+
+        $ej = DB::table('junior_enterprises as ej')
+        ->selectRaw('count(ej.id) as qnt')  
+        ->where('ej.core_id', $id)
+        ->first();
+
+        $state['result'] = [
+            'billing_by_member' => number_format(($total->total / $members->members),2),
+            'current_ies' => $ies->qnt,
+            'current_ies_junior' => $ies_junior->qnt,
+            'ej_quantity' => $ej->qnt,
+        ];
+
+        $core = DB::table('cores')
+            ->selectRaw('cores.color as color')
+            ->where('cores.id','=',$id)
+            ->first();
+
+        
+
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $state,
+            'core' => $core
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
