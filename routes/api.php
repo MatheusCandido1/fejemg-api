@@ -38,6 +38,7 @@ Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 Route::get('nucleos/{id}/conectados/{year}','CoreController@GetEjsConnectedByCore');
 Route::get('nucleos/{id}/conectados/resultados/{year}','CoreController@GetEjsConnectedStatusByCore');
 Route::get('nucleos/{id}/estado/indicadores/{year}','CoreController@GetStateCoreGoals');
+Route::get('nucleos/{id}/lideres/top/{year}', 'CoreController@GetTop5Ejs');
 
 // Federação
 

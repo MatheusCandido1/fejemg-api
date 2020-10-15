@@ -327,6 +327,48 @@ class CoreController extends Controller
         ], 200);
     }
 
+    public function GetTop5Ejs($id, $year) {
+        $currentMonth = Carbon::now()->month;
+
+        $result = DB::table('junior_enterprises as ej')
+        ->selectRaw('ej.id as id_ej, ej.name as name, foundations.name as ies, cores.name as core, cores.color as color, truncate((sum(projects.billing) / (junior_enterprise_goals.billing) * 100),6) as porc_fat, truncate((sum(projects.project_quantity) / (junior_enterprise_goals.projects) * 100),6) as porc_proj,  truncate(((junior_enterprise_goals.members_performing) / (junior_enterprise_goals.members_performing_goal) * 100),6) as porc_mem')  
+        ->join('junior_enterprise_project','junior_enterprise_project.junior_enterprise_id','=','ej.id')
+        ->join('projects','projects.id','=','junior_enterprise_project.project_id')
+        ->join('junior_enterprise_goals','junior_enterprise_goals.junior_enterprise_id','=','ej.id')  
+        ->join('cores','cores.id','=','ej.core_id')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')  
+        ->where('ej.core_id','=', $id)
+        ->where('junior_enterprise_goals.year', '=', $year)
+        ->where(DB::raw('YEAR(projects.signature_date)'), '=', $year)
+        ->groupBy('ej.id')
+        ->get();
+
+        $ejs['list'] = [];
+
+        
+        $newResult = collect(['id']);
+
+        for($i = 0; $i < sizeof($result); $i++) {
+            $newResult[$i] = $result[$i];
+            $newResult[$i]->porc = min( ((float) number_format( $result[$i]->porc_mem,3,'.','')), ((float) number_format( $result[$i]->porc_fat,3,'.','')),((float) number_format( $result[$i]->porc_proj,3,'.','')));
+
+            if($newResult[$i]->porc >= ($currentMonth * 8.33333) && $newResult[$i]->porc  < 100){
+                $ejs['list'][] = [
+                    'id' => $newResult[$i]->id_ej,
+                    'name' => $newResult[$i]->name,
+                    'ies' =>  $newResult[$i]->ies,
+                    'porc' => $newResult[$i]->porc
+                ];
+            }
+        }
+
+        $sorted = collect($ejs);
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'ejs' => $sorted->sortBy('porc')
+        ], 200);
+    }
+
     public function GetEjsConnectedByCore($id, $year) {
         $currentMonth = Carbon::now()->month;
 
