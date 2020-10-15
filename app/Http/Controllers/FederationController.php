@@ -483,7 +483,7 @@ class FederationController extends Controller
         ->groupBy('ej.id')
         ->get();
 
-        $goal = DB::table('federations as c')
+        $connected['goal'] = DB::table('federations as c')
         ->selectRaw('meta.connected')
         ->join('federation_goals as meta','c.id','=','meta.federation_id')
         ->where('c.id',1)
@@ -495,7 +495,6 @@ class FederationController extends Controller
         $connected['green'] = 0;
         $connected['yellow'] = 0;
         $connected['red'] = 0;
-        $ejs = [];
 
         $newResult = collect(['id']);
 
@@ -519,10 +518,11 @@ class FederationController extends Controller
                 $connected['red'] =  $connected['red'] + 1;
             }
         }
+        
+        $connected['porc'] = $connected['goal']->connected / $connected['connected'];
         return response()->json([
             'success_message' => 'Resultados!',
             'success_data' => $connected,
-            'federation_goal' => $goal
         ], 200);
     }
     /**
