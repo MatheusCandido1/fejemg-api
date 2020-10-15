@@ -503,7 +503,7 @@ class FederationController extends Controller
             $newResult[$i]->porc = min( ((float) number_format( $result[$i]->porc_mem,3,'.','')), ((float) number_format( $result[$i]->porc_fat,3,'.','')),((float) number_format( $result[$i]->porc_proj,3,'.','')));
             $newResult[$i]->porc_connected = min( ((float) number_format($result[$i]->porc_shared,3,'.','')), ((float) number_format($result[$i]->porc_event,3,'.','')));
             
-            if($newResult[$i]->porc_connected >= 100 && $newResult[$i]->porc_connected >= 100) {
+            if($newResult[$i]->porc >= 100 && $newResult[$i]->porc_connected >= 100) {
                 $connected['connected'] =  $connected['connected'] + 1;
             }
             if($newResult[$i]->porc_connected >= ($currentMonth * 8.33333) && $newResult[$i]->porc_connected  < 100){
@@ -519,7 +519,7 @@ class FederationController extends Controller
             }
         }
 
-        $connected['porc'] = $connected['goal']->connected / $connected['connected'];
+        $connected['porc'] = ($connected['connected'] / $connected['goal']->connected) * 100;
 
         return response()->json([
             'success_message' => 'Resultados!',
