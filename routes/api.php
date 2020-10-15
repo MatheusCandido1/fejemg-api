@@ -35,6 +35,11 @@ Route::get('nucleos/{id}/cluster/{year}', 'CoreController@getClusterByLight');
 
 Route::get('nucleos/{year}', 'CoreController@GetCoreResultsByYear');
 
+
+Route::get('nucleos/{id}/conectados/{year}','CoreController@GetEjsConnectedByCore');
+
+Route::get('nucleos/{id}/conectados/resultados/{year}','CoreController@GetEjsConnectedStatusByCore');
+
 Route::get('federacao/faturamento/{year}', 'FederationController@GetFederationBilling');
 Route::get('federacao/projetos/{year}', 'FederationController@GetFederationProjects');
 
