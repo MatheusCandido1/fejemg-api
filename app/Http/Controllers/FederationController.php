@@ -518,8 +518,9 @@ class FederationController extends Controller
                 $connected['red'] =  $connected['red'] + 1;
             }
         }
-        
+
         $connected['porc'] = $connected['goal']->connected / $connected['connected'];
+
         return response()->json([
             'success_message' => 'Resultados!',
             'success_data' => $connected,
