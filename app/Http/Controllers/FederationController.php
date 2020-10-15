@@ -577,6 +577,20 @@ class FederationController extends Controller
             'success_data' => $state,
         ], 200);
     }
+
+    public function GetEjByIES() {
+        $result = DB::table('junior_enterprises as ej')
+        ->selectRaw('foundations.name as x, count(ej.id) as y')  
+        ->join('foundations','foundations.id','=','ej.foundation_id')
+        ->groupBy('ej.foundation_id')
+        ->get();
+
+
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $result,
+        ], 200);
+    }
     /**
      * Show the form for creating a new resource.
      *
