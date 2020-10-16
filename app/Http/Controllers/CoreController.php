@@ -234,7 +234,7 @@ class CoreController extends Controller
                 $connected['yellow'] =  $connected['yellow'] + 1;
             }
     
-            if($newResult[$i]->porc_connected < ($currentMonth * 8.3333)){
+            if($newResult[$i]->porc_connected < (($currentMonth-1) * 8.3333)){
                 $connected['red'] =  $connected['red'] + 1;
             }
         }
@@ -296,7 +296,7 @@ class CoreController extends Controller
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
                 'ies' =>  $newResult[$i]->ies,
-                'cluster' => $newResult[$i]->cluster
+                'cluster' => $newResult[$i]->cluster,
             ];
 
         }
@@ -307,18 +307,20 @@ class CoreController extends Controller
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
                 'ies' =>  $newResult[$i]->ies,
-                'cluster' => $newResult[$i]->cluster
+                'cluster' => $newResult[$i]->cluster,
+                'porc' =>$newResult[$i]->porc
             ];
 
         }
 
-        if($newResult[$i]->porc < ($currentMonth * 8.3333)){
+        if($newResult[$i]->porc < (($currentMonth-1) * 8.3333)){
             $leaders['red'] = $leaders['red'] + 1;
             $ejs['red'][] = [
                 'id' => $newResult[$i]->id_ej,
                 'name' => $newResult[$i]->name,
                 'ies' =>  $newResult[$i]->ies,
-                'cluster' => $newResult[$i]->cluster
+                'cluster' => $newResult[$i]->cluster,
+                'porc' =>$newResult[$i]->porc
             ];
 
         }
@@ -519,8 +521,8 @@ class CoreController extends Controller
             }      
             }
 
-        if($newResult[$i]->porc < ($currentMonth * 8.3333)){
-            for($x = 1; $x < 6; $x++){
+            if($newResult[$i]->porc < (($currentMonth-1) * 8.3333)){
+                for($x = 1; $x < 6; $x++){
                 if($newResult[$i]->cluster == $x){
                     $leaders['red'][$x-1] =  $leaders['red'][$x-1] + 1;
                 }
