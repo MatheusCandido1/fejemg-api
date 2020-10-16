@@ -349,6 +349,11 @@ class CoreController extends Controller
         ->where('ej.core_id', $id)
         ->first();
 
+        $core = DB::table('cores')
+        ->selectRaw('cores.color as color')
+        ->where('cores.id','=',$id)
+        ->first();
+
         
         $ej = DB::table('junior_enterprises as ej')
         ->selectRaw('count(ej.id) as qnt')  
@@ -372,7 +377,8 @@ class CoreController extends Controller
 
         return response()->json([
             'success_message' => 'Resultados!',
-            'success_data' => $impact
+            'success_data' => $impact,
+            'core' => $core
         ], 200);
     }
 
