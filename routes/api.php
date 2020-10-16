@@ -39,6 +39,7 @@ Route::get('nucleos/{id}/conectados/{year}','CoreController@GetEjsConnectedByCor
 Route::get('nucleos/{id}/conectados/resultados/{year}','CoreController@GetEjsConnectedStatusByCore');
 Route::get('nucleos/{id}/estado/indicadores/{year}','CoreController@GetStateCoreGoals');
 Route::get('nucleos/{id}/lideres/top/{year}', 'CoreController@GetTop5Ejs');
+Route::get('nucleos/{id}/impacto/indicadores/{year}', 'CoreController@GetImpactResults');
 
 // Federação
 
@@ -52,6 +53,7 @@ Route::get('federacao/conectados/resultados/{year}','FederationController@GetEjs
 Route::get('federacao/faturamento/nucleos/{year}', 'FederationController@GetBillingByCore');
 Route::get('federacao/estado/indicadores/{year}', 'FederationController@GetStateGoals');
 Route::get('federacao/estados/ies/{year}', 'FederationController@GetEjByIES');
+Route::get('federacao/impacto/indicadores/{year}', 'FederationController@GetImpactResults');
 
 Route::middleware(['auth:api'])->group(function () {
     Route::get('federacoes', 'FederationController@index');

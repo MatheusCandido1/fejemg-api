@@ -241,6 +241,48 @@ class FederationController extends Controller
         ], 200);
     }
 
+    public function GetImpactResults($year) {
+
+        $impact = [];
+        $meta = DB::table('federations as c')
+        ->selectRaw('meta.impact as impact, meta.nps as nps')
+        ->join('federation_goals as meta','c.id','=','meta.federation_id')
+        ->where('c.id',1)
+        ->where('meta.year','=',$year)
+        ->first();
+
+       $total = DB::table('junior_enterprises as ej')
+        ->selectRaw('sum(meta.current_impact_projects)  as impact, sum(meta.current_nps) as nps')  
+        ->join('junior_enterprise_goals as meta','meta.junior_enterprise_id','=','ej.id')  
+        ->where('meta.year', '=', $year)
+        ->first();
+
+        
+        $ej = DB::table('junior_enterprises as ej')
+        ->selectRaw('count(ej.id) as qnt')  
+        ->first();
+
+        $impact['goal'] =  [
+            'impact_projects' => $meta->impact,
+            'nps' => $meta->nps,
+        ];
+
+        $impact['results'] = [
+            'impact_projects' => $total->impact ,
+            'nps' => $total->nps / $ej->qnt,
+        ];
+
+        $impact['porc'] = [
+            'impact_projects' => ($total->impact / $meta->impact) * 100,
+            'nps' => (($total->nps / $ej->qnt) / ($meta->nps)) * 100,
+        ];
+
+        return response()->json([
+            'success_message' => 'Resultados!',
+            'success_data' => $impact
+        ], 200);
+    }
+
     public function GetClusterByLight($year) {
         $currentMonth = Carbon::now()->month;
 
